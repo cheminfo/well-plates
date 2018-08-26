@@ -1,7 +1,7 @@
 {
   "name": "well-plates",
   "version": "0.0.0",
-  "description": "Utility to handle with locations on well plates",
+  "description": "Utility to manipulate positions on well plates",
   "main": "./lib/index.js",
   "module": "./lib-es6/index.js",
   "types": "./lib/index.d.ts",

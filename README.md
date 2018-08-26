@@ -5,7 +5,7 @@
 [![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
-Utility to handle with locations on well plates.
+Utility to manipulate positions on well plates.
 
 ## Installation
 
@@ -19,6 +19,8 @@ import { myModule } from 'well-plates';
 const result = myModule(args);
 // result is ...
 ```
+
+## [API Documentation](https://cheminfo.github.io/well-plates/)
 
 ## License
 
