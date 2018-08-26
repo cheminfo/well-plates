@@ -4,24 +4,32 @@ describe('WellPlate', () => {
   it('invalid construction', () => {
     expect(() => new WellPlate('inv')).toThrowError(/invalid well plate type/);
   });
-  it('getWellCode', () => {
-    const wellPlate = new WellPlate('4x6');
-    expect(wellPlate.getCode(0)).toEqual('A1');
-    expect(wellPlate.getCode(3)).toEqual('A4');
-    expect(wellPlate.getCode(8)).toEqual('B3');
-    expect(() => wellPlate.getCode(24)).toThrowError(
+  it('getPositionCode', () => {
+    const wellPlate = new WellPlate(4, 6);
+    expect(wellPlate.getPositionCode(0)).toEqual('A1');
+    expect(wellPlate.getPositionCode(3)).toEqual('A4');
+    expect(wellPlate.getPositionCode(8)).toEqual('B3');
+    expect(wellPlate.getPositionCode({ row: 3, column: 3 })).toEqual('D4');
+    expect(() => wellPlate.getPositionCode(24)).toThrowError(
       /well index is out of range/
+    );
+    expect(() => wellPlate.getPositionCode({ row: 4, column: 0 })).toThrowError(
+      /well position is out of range/
     );
   });
 
-  it('getWellCode sequential format', () => {
+  it('getPositionCode sequential format', () => {
     const wellPlate = new WellPlate('9x9');
-    expect(wellPlate.getCode(55)).toEqual('56');
+    expect(wellPlate.getPositionCode(55)).toEqual('56');
+    expect(wellPlate.getPositionCode({ row: 2, column: 5 })).toEqual('24');
+    expect(() => wellPlate.getPositionCode({ row: 7, column: 9 })).toThrowError(
+      /well position is out of range/
+    );
   });
 
   it('getCodeRange', () => {
     const wellPlate = new WellPlate('4x6');
-    expect(wellPlate.getCodeRange(16, 5)).toEqual([
+    expect(wellPlate.getPositionCodeRange(16, 5)).toEqual([
       'C5',
       'C6',
       'D1',
