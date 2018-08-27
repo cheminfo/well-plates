@@ -20,7 +20,7 @@ const result = myModule(args);
 // result is ...
 ```
 
-## [API Documentation](https://cheminfo.github.io/well-plates/)
+## [API Documentation](https://cheminfo.github.io/well-plates/modules/_index_.html)
 
 ## License
 
