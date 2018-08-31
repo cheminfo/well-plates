@@ -10,9 +10,10 @@
     "lib-es6"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "clean": "rimraf lib lib-es6",
+    "build": "run-s tsc rollup",
+    "clean": "rimraf lib lib-es6 dist",
     "prepublishOnly": "npm run tsc",
+    "rollup": "rollup -c",
     "test": "run-s test-only tslint",
     "test-only": "jest",
     "test-coverage": "jest --coverage",
