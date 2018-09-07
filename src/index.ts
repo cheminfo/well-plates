@@ -112,12 +112,21 @@ export class WellPlate {
    * @param startIndex The index where the range starts
    * @param size The number of sequential positions to include in the range.
    */
-  public getPositionCodeRange(startIndex: number, size: number) {
+  public getPositionCodeRange(start: number | string, size: number) {
+    const startIndex =
+      typeof start === 'number' ? start : this._getIndexFromCode(start);
     const endIndex = startIndex + size - 1;
     this._checkIndex(startIndex);
     this._checkIndex(endIndex);
 
     return getRange(startIndex, size).map(this.getPositionCode.bind(this));
+  }
+
+  public getIndex(position: IPosition | string): number {
+    if (typeof position === 'string') {
+      return this.getIndex(this.getPosition(position));
+    }
+    return position.row * this.columns + position.column;
   }
 
   /**
@@ -155,6 +164,10 @@ export class WellPlate {
       row: Math.floor(index / this.columns),
       column: index % this.columns
     };
+  }
+
+  private _getIndexFromCode(wellCode: string) {
+    return this.getIndex(this.getPosition(wellCode));
   }
 
   private _formatError() {

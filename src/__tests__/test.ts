@@ -29,13 +29,9 @@ describe('WellPlate', () => {
 
   it('getCodeRange', () => {
     const wellPlate = new WellPlate('4x6');
-    expect(wellPlate.getPositionCodeRange(16, 5)).toEqual([
-      'C5',
-      'C6',
-      'D1',
-      'D2',
-      'D3'
-    ]);
+    const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
+    expect(wellPlate.getPositionCodeRange(16, 5)).toEqual(expected);
+    expect(wellPlate.getPositionCodeRange('C5', 5)).toEqual(expected);
   });
 
   it('getPosition', () => {
@@ -58,6 +54,11 @@ describe('WellPlate', () => {
     expect(() => wellPlate.getPosition('a1')).toThrowError(
       /invalid well code format. Must be a letter followed by a number/
     );
+  });
+
+  it('getIndex', () => {
+    const wellPlate = new WellPlate('4x6');
+    expect(wellPlate.getIndex('A6')).toEqual(5);
   });
 
   it('getPosition Sequential format', () => {
