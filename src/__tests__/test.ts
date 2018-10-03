@@ -78,6 +78,31 @@ describe('WellPlate', () => {
       /invalid well code format. Must be a number/
     );
   });
+
+  it('should return column labels', () => {
+    const wellPlate = getWellPlate('8x12');
+    const expected = [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '11',
+      '12'
+    ];
+    expect(wellPlate.columnLabels).toEqual(expected);
+  });
+
+  it('should return row labels', () => {
+    const wellPlate = getWellPlate('8x12');
+    const expected = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    expect(wellPlate.rowLabels).toEqual(expected);
+  });
 });
 
 function getWellPlate(

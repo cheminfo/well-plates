@@ -151,6 +151,32 @@ export class WellPlate {
     return position;
   }
 
+  get columnLabels() {
+    if (this.positionFormat !== PositionFormat.LetterNumber) {
+      throw new Error('UNIMPLEMENTED');
+    } else {
+      const result: string[] = [];
+      let label = 1;
+      for (let i = 0; i < this.columns; i++) {
+        result.push(String(label++));
+      }
+      return result;
+    }
+  }
+
+  get rowLabels() {
+    if (this.positionFormat !== PositionFormat.LetterNumber) {
+      throw new Error('UNIMPLEMENTED');
+    } else {
+      const result: string[] = [];
+      let label = 'A'.charCodeAt(0);
+      for (let i = 0; i < this.rows; i++) {
+        result.push(String.fromCharCode(label++));
+      }
+      return result;
+    }
+  }
+
   private _getPositionFromIndex(index: number): IPosition {
     return {
       row: Math.floor(index / this.columns),
