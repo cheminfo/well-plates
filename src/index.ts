@@ -29,6 +29,15 @@ export enum PositionFormat {
   LetterNumber
 }
 
+export interface IWellPlateConfig {
+  rows: number;
+  columns: number;
+  /**
+   * Default: `PositionFormat.LetterNumber`
+   */
+  positionFormat?: PositionFormat;
+}
+
 /**
  * WellPlate - class representing a well plate
  */
@@ -53,39 +62,12 @@ export class WellPlate {
    */
   private size: number;
 
-  /**
-   * Constructor using number of rows and columns.
-   * @param rows The number of rows in the well plate.
-   * @param columns The number of columns in the well plate.
-   */
-  constructor(rows: number, columns: number);
-  /**
-   * Constructor using a string representing the dimensions of the well plate.
-   * @param dimensions The plate dimensions in format "<number>x<number>".
-   */
-  constructor(dimensions: string);
-  constructor(arg1: number | string, columns?: number) {
-    if (typeof arg1 === 'string') {
-      const reg = /^(\d+)x(\d+)$/;
-      const m = reg.exec(arg1);
-      if (m === null) {
-        throw new Error(
-          'invalid well plate type, type must be formatted as <number>x<number>'
-        );
-      }
-      this.rows = +m[1];
-      this.columns = +m[2];
-    } else {
-      this.rows = arg1;
-      this.columns = columns || 0;
-    }
-
+  constructor(config: IWellPlateConfig) {
+    this.rows = config.rows;
+    this.columns = config.columns;
+    const { positionFormat = PositionFormat.LetterNumber } = config;
+    this.positionFormat = positionFormat;
     this.size = this.rows * this.columns;
-    if (this.columns === 9 && this.rows === 9) {
-      this.positionFormat = PositionFormat.Sequential;
-    } else {
-      this.positionFormat = PositionFormat.LetterNumber;
-    }
   }
 
   /**
@@ -127,12 +109,14 @@ export class WellPlate {
     this._checkIndex(startIndex);
     this._checkIndex(endIndex);
 
-    return getRange(startIndex, size).map(this.getPositionCode.bind(this));
+    return getRange(startIndex, size).map((index) =>
+      this.getPositionCode(index)
+    );
   }
 
   public getIndex(position: IPosition | string): number {
     if (typeof position === 'string') {
-      return this.getIndex(this.getPosition(position));
+      return this._getIndexFromCode(position);
     }
     return position.row * this.columns + position.column;
   }
