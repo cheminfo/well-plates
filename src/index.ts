@@ -37,25 +37,33 @@ export class WellPlate {
    * The number of rows the well plate has.
    */
   public readonly rows: number;
+
   /**
    * The number of columns the well plate has.
    */
   public readonly columns: number;
-  /**
-   * The number of well o nthe well plate.
-   */
+
   /**
    * The well code format in use for this well plate.
    */
   public readonly positionFormat: PositionFormat;
-  private size: number;
+
   /**
-   * Constructor using a string representing the dimensions of the well plate.
+   * The number of wells on the well plate.
+   */
+  private size: number;
+
+  /**
+   * Constructor using number of rows and columns.
    * @param rows The number of rows in the well plate.
    * @param columns The number of columns in the well plate.
    */
   constructor(rows: number, columns: number);
-  constructor(type: string);
+  /**
+   * Constructor using a string representing the dimensions of the well plate.
+   * @param dimensions The plate dimensions in format "<number>x<number>".
+   */
+  constructor(dimensions: string);
   constructor(arg1: number | string, columns?: number) {
     if (typeof arg1 === 'string') {
       const reg = /^(\d+)x(\d+)$/;
