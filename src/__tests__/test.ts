@@ -109,6 +109,17 @@ describe('WellPlate', () => {
     const expected = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     expect(wellPlate.rowLabels).toEqual(expected);
   });
+
+  it('set and get data', () => {
+    const wellPlate = getWellPlate('8x12');
+    wellPlate.setData(4, 'data1');
+    wellPlate.setData('B5', 'data2');
+    wellPlate.setData({ row: 3, column: 5 }, 'data3');
+    expect(wellPlate.getData(10)).toBeUndefined();
+    expect(wellPlate.getData(4)).toEqual('data1');
+    expect(wellPlate.getData('B5')).toEqual('data2');
+    expect(wellPlate.getData({ row: 3, column: 5 })).toEqual('data3');
+  });
 });
 
 function getWellPlate(

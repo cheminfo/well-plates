@@ -41,7 +41,7 @@ export interface IWellPlateConfig {
 /**
  * WellPlate - class representing a well plate
  */
-export class WellPlate {
+export class WellPlate<T = any> {
   /**
    * The number of rows the well plate has.
    */
@@ -58,6 +58,11 @@ export class WellPlate {
   public readonly positionFormat: PositionFormat;
 
   /**
+   * Data associated to a given well
+   */
+  public readonly data: T[];
+
+  /**
    * The number of wells on the well plate.
    */
   private size: number;
@@ -68,6 +73,7 @@ export class WellPlate {
     const { positionFormat = PositionFormat.LetterNumber } = config;
     this.positionFormat = positionFormat;
     this.size = this.rows * this.columns;
+    this.data = new Array(this.size);
   }
 
   /**
@@ -114,11 +120,24 @@ export class WellPlate {
     );
   }
 
-  public getIndex(position: IPosition | string): number {
+  public getIndex(position: IPosition | string | number): number {
+    if (typeof position === 'number') {
+      return position;
+    }
     if (typeof position === 'string') {
       return this._getIndexFromCode(position);
     }
     return position.row * this.columns + position.column;
+  }
+
+  public getData(position: IPosition | string | number) {
+    const index = this.getIndex(position);
+    return this.data[index];
+  }
+
+  public setData(position: IPosition | string | number, item: T) {
+    const index = this.getIndex(position);
+    this.data[index] = item;
   }
 
   /**
