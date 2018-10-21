@@ -120,6 +120,31 @@ describe('WellPlate', () => {
     expect(wellPlate.getData('B5')).toEqual('data2');
     expect(wellPlate.getData({ row: 3, column: 5 })).toEqual('data3');
   });
+
+  it('iterator', () => {
+    const wellPlate = getWellPlate('2x2');
+    expect([...wellPlate]).toEqual([
+      {
+        index: 0,
+        position: { row: 0, column: 0 },
+        code: 'A1',
+        data: undefined
+      },
+      {
+        index: 1,
+        position: { row: 0, column: 1 },
+        code: 'A2',
+        data: undefined
+      },
+      {
+        index: 2,
+        position: { row: 1, column: 0 },
+        code: 'B1',
+        data: undefined
+      },
+      { index: 3, position: { row: 1, column: 1 }, code: 'B2', data: undefined }
+    ]);
+  });
 });
 
 function getWellPlate(

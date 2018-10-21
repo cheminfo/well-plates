@@ -76,6 +76,27 @@ export class WellPlate<T = any> {
     this.data = new Array(this.size);
   }
 
+  public [Symbol.iterator]() {
+    let i = -1;
+    return {
+      next: () => {
+        i++;
+        const done = i === this.size;
+        return {
+          done,
+          value: done
+            ? null
+            : {
+                index: i,
+                position: this._getPositionFromIndex(i),
+                code: this.getPositionCode(i),
+                data: this.getData(i)
+              }
+        };
+      }
+    };
+  }
+
   /**
    * Get the code for a specific position on the well.
    *
