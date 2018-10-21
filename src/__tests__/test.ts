@@ -1,6 +1,12 @@
 import { PositionFormat, WellPlate } from '..';
 
 describe('WellPlate', () => {
+  it('size', () => {
+    const wellPlate = new WellPlate({ rows: 2, columns: 8 });
+    expect(wellPlate.rows).toEqual(2);
+    expect(wellPlate.columns).toEqual(8);
+  });
+
   it('getPositionCode', () => {
     const wellPlate = new WellPlate({ rows: 4, columns: 6 });
     expect(wellPlate.getPositionCode(0)).toEqual('A1');
