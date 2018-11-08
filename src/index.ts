@@ -192,21 +192,22 @@ export class WellPlate<T = any> {
   }
 
   get columnLabels() {
-    if (this.positionFormat !== PositionFormat.LetterNumber) {
-      throw new Error('UNIMPLEMENTED');
-    } else {
-      const result: string[] = [];
-      let label = 1;
-      for (let i = 0; i < this.columns; i++) {
-        result.push(String(label++));
-      }
-      return result;
+    const result: string[] = [];
+    let label = 1;
+    for (let i = 0; i < this.columns; i++) {
+      result.push(String(label++));
     }
+    return result;
   }
 
   get rowLabels() {
     if (this.positionFormat !== PositionFormat.LetterNumber) {
-      throw new Error('UNIMPLEMENTED');
+      const result: string[] = [];
+      let label = 1;
+      for (let i = 0; i < this.rows; i++) {
+        result.push(String(label++));
+      }
+      return result;
     } else {
       const result: string[] = [];
       let label = 'A'.charCodeAt(0);

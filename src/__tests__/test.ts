@@ -114,12 +114,18 @@ describe('WellPlate', () => {
       '12'
     ];
     expect(wellPlate.columnLabels).toEqual(expected);
+
+    const wellPlateSeq = getWellPlate('3x4', PositionFormat.Sequential);
+    expect(wellPlateSeq.columnLabels).toEqual(['1', '2', '3', '4']);
   });
 
   it('should return row labels', () => {
     const wellPlate = getWellPlate('8x12');
     const expected = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     expect(wellPlate.rowLabels).toEqual(expected);
+
+    const wellPlateSeq = getWellPlate('3x4', PositionFormat.Sequential);
+    expect(wellPlateSeq.rowLabels).toEqual(['1', '2', '3']);
   });
 
   it('set and get data', () => {
