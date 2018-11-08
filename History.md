@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/cheminfo/well-plates/compare/v2.0.0...v3.0.0) (2018-11-08)
+
+
+* change PositionFormat enum to be a string ([ed40f5b](https://github.com/cheminfo/well-plates/commit/ed40f5b))
+
+
+### BREAKING CHANGES
+
+* positionFormat of the WellPlate class was a number and becomes a string
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/cheminfo/well-plates/compare/v1.1.0...v2.0.0) (2018-11-02)
 
