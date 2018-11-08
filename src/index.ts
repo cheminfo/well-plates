@@ -21,12 +21,12 @@ export enum PositionFormat {
   /**
    * Sequential. When this format is used, the position code will starts with 1 and will be incremented columns first.
    */
-  Sequential,
+  Sequential = 'SEQUENTIAL',
   /**
    * A letter + a number. When this format is used, the position will be represented
    * as a string with one letter + one number, representing the row and column position. For example B3 is for second row, 3rd column.
    */
-  LetterNumber
+  LetterNumber = 'LETTER_NUMBER'
 }
 
 export interface IWellPlateConfig {

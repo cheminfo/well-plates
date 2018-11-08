@@ -64,6 +64,18 @@ describe('WellPlate', () => {
     expect(wellPlate.getIndex('A6')).toEqual(5);
   });
 
+  it('sequential and letterNumber formats', () => {
+    const wellPlateSeq = getWellPlate('9x9', PositionFormat.Sequential);
+    expect(wellPlateSeq.positionFormat).toEqual(PositionFormat.Sequential);
+    // Check this because format can come from a database
+    expect(wellPlateSeq.positionFormat).toEqual('SEQUENTIAL');
+
+    const wellPlate = getWellPlate('9x9');
+    expect(wellPlate.positionFormat).toEqual(PositionFormat.LetterNumber);
+    // Check this because format can come from a database
+    expect(wellPlate.positionFormat).toEqual('LETTER_NUMBER');
+  });
+
   it('getPosition Sequential format', () => {
     const wellPlate = getWellPlate('9x9', PositionFormat.Sequential);
     expect(wellPlate.getPosition('9')).toEqual({
