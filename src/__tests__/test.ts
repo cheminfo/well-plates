@@ -78,6 +78,12 @@ describe('WellPlate', () => {
     expect(wellPlate.getPositionCodeZone('C2', 'D4')).toEqual(expected);
     expect(wellPlate.getPositionCodeZone('D4', 'C2')).toEqual(expected);
     expect(wellPlate.getPositionCodeZone('D4', 'D4')).toEqual(['D4']);
+    expect(wellPlate.getPositionCodeZone('B3', 'C2')).toEqual([
+      'B2',
+      'B3',
+      'C2',
+      'C3'
+    ]);
   });
 
   it('getPosition', () => {

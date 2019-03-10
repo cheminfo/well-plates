@@ -202,24 +202,28 @@ export class WellPlate<T = any> {
   }
 
   public getPositionCodeZone(start: string | number, end: string | number) {
-    let startIndex = this.getIndex(start);
-    let endIndex = this.getIndex(end);
-    if (startIndex > endIndex) {
-      [startIndex, endIndex] = [endIndex, startIndex];
-    }
-    this._checkIndex(startIndex);
-    this._checkIndex(endIndex);
-    const startPosition = this.getPosition(startIndex);
-    const endPosition = this.getPosition(endIndex);
-    const width = endPosition.column - startPosition.column + 1;
-    const height = endPosition.row - startPosition.row + 1;
+    const startPosition = this.getPosition(start);
+    const endPosition = this.getPosition(end);
+    this._checkPosition(startPosition);
+    this._checkPosition(endPosition);
+    const upperLeft = {
+      row: Math.min(startPosition.row, endPosition.row),
+      column: Math.min(startPosition.column, endPosition.column)
+    };
+    const bottomRight = {
+      row: Math.max(startPosition.row, endPosition.row),
+      column: Math.max(startPosition.column, endPosition.column)
+    };
+
+    const width = bottomRight.column - upperLeft.column + 1;
+    const height = bottomRight.row - upperLeft.row + 1;
     const range = [];
     for (let j = 0; j < height; j++) {
       for (let i = 0; i < width; i++) {
         range.push(
           this.getPositionCode({
-            row: startPosition.row + j,
-            column: startPosition.column + i
+            row: upperLeft.row + j,
+            column: upperLeft.column + i
           })
         );
       }
