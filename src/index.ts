@@ -147,7 +147,7 @@ export class WellPlate<T = any> {
     sizeOrEnd: number | string | IPosition,
     mode: RangeMode = RangeMode.byRows
   ) {
-    let startIndex = this._getIndex(start);
+    let startIndex = this.getIndex(start);
     this._checkIndex(startIndex);
     if (mode === RangeMode.byRows) {
       let size;
@@ -156,7 +156,7 @@ export class WellPlate<T = any> {
         size = sizeOrEnd;
         endIndex = startIndex + size - 1;
       } else {
-        endIndex = this._getIndex(sizeOrEnd);
+        endIndex = this.getIndex(sizeOrEnd);
         if (startIndex > endIndex) {
           [startIndex, endIndex] = [endIndex, startIndex];
         }
@@ -173,8 +173,10 @@ export class WellPlate<T = any> {
         size = sizeOrEnd;
         endIndex = startIndex + size - 1;
       } else {
-        endIndex = this._getIndex(sizeOrEnd);
-        if (startIndex > endIndex) {
+        endIndex = this.getIndex(sizeOrEnd);
+        if (
+          this._getIndexByColumn(startIndex) > this._getIndexByColumn(endIndex)
+        ) {
           [startIndex, endIndex] = [endIndex, startIndex];
         }
         const startPosition = this.getPosition(startIndex);
@@ -200,8 +202,8 @@ export class WellPlate<T = any> {
   }
 
   public getPositionCodeZone(start: string | number, end: string | number) {
-    let startIndex = this._getIndex(start);
-    let endIndex = this._getIndex(end);
+    let startIndex = this.getIndex(start);
+    let endIndex = this.getIndex(end);
     if (startIndex > endIndex) {
       [startIndex, endIndex] = [endIndex, startIndex];
     }
@@ -318,14 +320,11 @@ export class WellPlate<T = any> {
     return this.getIndex(this.getPosition(wellCode));
   }
 
-  private _getIndex(position: number | string | IPosition) {
-    if (typeof position === 'number') {
-      return position;
+  private _getIndexByColumn(position: number | string | IPosition) {
+    if (typeof position === 'number' || typeof position === 'string') {
+      position = this.getPosition(position);
     }
-    if (typeof position === 'string') {
-      return this._getIndexFromCode(position);
-    }
-    return this.getIndex(position);
+    return position.column * this.rows + position.row;
   }
 
   private _formatError() {
