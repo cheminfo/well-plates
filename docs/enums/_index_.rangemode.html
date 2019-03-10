@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PositionFormat | well-plates</title>
+	<title>RangeMode | well-plates</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,23 +59,16 @@
 					<a href="../modules/_index_.html">&quot;index&quot;</a>
 				</li>
 				<li>
-					<a href="_index_.positionformat.html">PositionFormat</a>
+					<a href="_index_.rangemode.html">RangeMode</a>
 				</li>
 			</ul>
-			<h1>Enumeration PositionFormat</h1>
+			<h1>Enumeration RangeMode</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The format of a well position.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -83,8 +76,8 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_index_.positionformat.html#letternumber" class="tsd-kind-icon">Letter<wbr>Number</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_index_.positionformat.html#sequential" class="tsd-kind-icon">Sequential</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_index_.rangemode.html#bycolumns" class="tsd-kind-icon">by<wbr>Columns</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_index_.rangemode.html#byrows" class="tsd-kind-icon">by<wbr>Rows</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,33 +86,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="letternumber" class="tsd-anchor"></a>
-					<h3>Letter<wbr>Number</h3>
-					<div class="tsd-signature tsd-kind-icon">Letter<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;LETTER_NUMBER&quot;</span></div>
+					<a name="bycolumns" class="tsd-anchor"></a>
+					<h3>by<wbr>Columns</h3>
+					<div class="tsd-signature tsd-kind-icon">by<wbr>Columns<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;BY_COLUMNS&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/cc61a50/src/index.ts#L29">index.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/cc61a50/src/index.ts#L42">index.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>A letter + a number. When this format is used, the position will be represented
-							as a string with one letter + one number, representing the row and column position. For example B3 is for second row, 3rd column.</p>
+							<p>Process range column by column</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="sequential" class="tsd-anchor"></a>
-					<h3>Sequential</h3>
-					<div class="tsd-signature tsd-kind-icon">Sequential<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;SEQUENTIAL&quot;</span></div>
+					<a name="byrows" class="tsd-anchor"></a>
+					<h3>by<wbr>Rows</h3>
+					<div class="tsd-signature tsd-kind-icon">by<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;BY_ROWS&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/cc61a50/src/index.ts#L24">index.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/cc61a50/src/index.ts#L37">index.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Sequential. When this format is used, the position code will starts with 1 and will be incremented columns first.</p>
+							<p>Process ranges row by row</p>
 						</div>
 					</div>
 				</section>
@@ -147,24 +139,24 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="_index_.positionformat.html" class="tsd-kind-icon">Position<wbr>Format</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="_index_.positionformat.html" class="tsd-kind-icon">Position<wbr>Format</a>
+						<a href="_index_.rangemode.html" class="tsd-kind-icon">Range<wbr>Mode</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_index_.positionformat.html#letternumber" class="tsd-kind-icon">Letter<wbr>Number</a>
+								<a href="_index_.rangemode.html#bycolumns" class="tsd-kind-icon">by<wbr>Columns</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_index_.positionformat.html#sequential" class="tsd-kind-icon">Sequential</a>
+								<a href="_index_.rangemode.html#byrows" class="tsd-kind-icon">by<wbr>Rows</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="_index_.rangemode.html" class="tsd-kind-icon">Range<wbr>Mode</a>
-					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="../classes/_index_.wellplate.html" class="tsd-kind-icon">Well<wbr>Plate</a>
 					</li>
