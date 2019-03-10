@@ -29,6 +29,19 @@ export enum PositionFormat {
   LetterNumber = 'LETTER_NUMBER'
 }
 
+export enum RangeMode {
+  /**
+   * Process ranges row by row
+   */
+
+  byRows = 'BY_ROWS',
+
+  /**
+   * Process range column by column
+   */
+  byColumns = 'BY_COLUMNS'
+}
+
 export interface IWellPlateConfig {
   rows: number;
   columns: number;
@@ -129,16 +142,61 @@ export class WellPlate<T = any> {
    * @param startIndex The index where the range starts
    * @param size The number of sequential positions to include in the range.
    */
-  public getPositionCodeRange(start: number | string, size: number) {
+  public getPositionCodeRange(
+    start: number | string,
+    size: number,
+    mode: RangeMode = RangeMode.byRows
+  ) {
     const startIndex =
       typeof start === 'number' ? start : this._getIndexFromCode(start);
-    const endIndex = startIndex + size - 1;
+    this._checkIndex(startIndex);
+    if (mode === RangeMode.byRows) {
+      const endIndex = startIndex + size - 1;
+      this._checkIndex(endIndex);
+
+      return getRange(startIndex, size).map((index) =>
+        this.getPositionCode(index)
+      );
+    } else if (mode === RangeMode.byColumns) {
+      const range: IPosition[] = [];
+      const position = this.getPosition(start);
+      for (let i = 0; i < size; i++) {
+        const newPosition: IPosition = {
+          row: (position.row + i) % this.rows,
+          column: position.column + Math.floor((i + position.row) / this.rows)
+        };
+        range.push(newPosition);
+      }
+      this._checkPosition(range[range.length - 1]);
+      return range.map(this.getPositionCode.bind(this));
+    }
+  }
+
+  public getPositionCodeZone(start: string | number, end: string | number) {
+    let startIndex =
+      typeof start === 'number' ? start : this._getIndexFromCode(start);
+    let endIndex = typeof end === 'number' ? end : this._getIndexFromCode(end);
+    if (startIndex > endIndex) {
+      [startIndex, endIndex] = [endIndex, startIndex];
+    }
     this._checkIndex(startIndex);
     this._checkIndex(endIndex);
-
-    return getRange(startIndex, size).map((index) =>
-      this.getPositionCode(index)
-    );
+    const startPosition = this.getPosition(startIndex);
+    const endPosition = this.getPosition(endIndex);
+    const width = endPosition.column - startPosition.column + 1;
+    const height = endPosition.row - startPosition.row + 1;
+    const range = [];
+    for (let j = 0; j < height; j++) {
+      for (let i = 0; i < width; i++) {
+        range.push(
+          this.getPositionCode({
+            row: startPosition.row + j,
+            column: startPosition.column + i
+          })
+        );
+      }
+    }
+    return range;
   }
 
   public getIndex(position: IPosition | string | number): number {
@@ -165,30 +223,35 @@ export class WellPlate<T = any> {
    * Get the well position given a formatted well position code.
    * @param wellCode The position code.
    */
-  public getPosition(wellCode: string): IPosition {
-    const reg = /^([A-Z])(\d+)$/;
-    const m = reg.exec(wellCode);
-    if (m === null) {
-      if (this.positionFormat !== PositionFormat.Sequential) {
-        this._formatError();
+  public getPosition(wellCode: string | number): IPosition {
+    if (typeof wellCode === 'number') {
+      this._checkIndex(wellCode);
+      return this._getPositionFromIndex(wellCode);
+    } else {
+      const reg = /^([A-Z])(\d+)$/;
+      const m = reg.exec(wellCode);
+      if (m === null) {
+        if (this.positionFormat !== PositionFormat.Sequential) {
+          this._formatError();
+        }
+        const wellIndex = +wellCode - 1;
+        if (Number.isNaN(wellIndex)) {
+          this._formatError();
+        }
+        this._checkIndex(wellIndex);
+        return this._getPositionFromIndex(wellIndex);
       }
-      const wellIndex = +wellCode - 1;
-      if (Number.isNaN(wellIndex)) {
-        this._formatError();
-      }
-      this._checkIndex(wellIndex);
-      return this._getPositionFromIndex(wellIndex);
-    }
 
-    if (this.positionFormat !== PositionFormat.LetterNumber) {
-      this._formatError();
+      if (this.positionFormat !== PositionFormat.LetterNumber) {
+        this._formatError();
+      }
+      const position = {
+        row: m[1].charCodeAt(0) - 'A'.charCodeAt(0),
+        column: +m[2] - 1
+      };
+      this._checkPosition(position);
+      return position;
     }
-    const position = {
-      row: m[1].charCodeAt(0) - 'A'.charCodeAt(0),
-      column: +m[2] - 1
-    };
-    this._checkPosition(position);
-    return position;
   }
 
   get columnLabels() {

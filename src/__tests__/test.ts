@@ -1,4 +1,4 @@
-import { PositionFormat, WellPlate } from '..';
+import { PositionFormat, RangeMode, WellPlate } from '..';
 
 describe('WellPlate', () => {
   it('size', () => {
@@ -30,11 +30,30 @@ describe('WellPlate', () => {
     );
   });
 
-  it('getCodeRange', () => {
+  it('getCodeRange by rows', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
     expect(wellPlate.getPositionCodeRange(16, 5)).toEqual(expected);
     expect(wellPlate.getPositionCodeRange('C5', 5)).toEqual(expected);
+  });
+
+  it('getCodeRange by columns', () => {
+    const wellPlate = getWellPlate('5x6');
+    const expected = ['C5', 'D5', 'E5', 'A6'];
+    expect(wellPlate.getPositionCodeRange(16, 4, RangeMode.byColumns)).toEqual(
+      expected
+    );
+    expect(
+      wellPlate.getPositionCodeRange('C5', 4, RangeMode.byColumns)
+    ).toEqual(expected);
+  });
+
+  it('getPositionCodeZone', () => {
+    const wellPlate = getWellPlate('4x6');
+    const expected = ['C2', 'C3', 'C4', 'D2', 'D3', 'D4'];
+    expect(wellPlate.getPositionCodeZone('C2', 'D4')).toEqual(expected);
+    expect(wellPlate.getPositionCodeZone('D4', 'C2')).toEqual(expected);
+    expect(wellPlate.getPositionCodeZone('D4', 'D4')).toEqual(['D4']);
   });
 
   it('getPosition', () => {
