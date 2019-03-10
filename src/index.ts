@@ -143,23 +143,51 @@ export class WellPlate<T = any> {
    * @param size The number of sequential positions to include in the range.
    */
   public getPositionCodeRange(
-    start: number | string,
-    size: number,
+    start: number | string | IPosition,
+    sizeOrEnd: number | string | IPosition,
     mode: RangeMode = RangeMode.byRows
   ) {
-    const startIndex =
-      typeof start === 'number' ? start : this._getIndexFromCode(start);
+    let startIndex = this._getIndex(start);
     this._checkIndex(startIndex);
     if (mode === RangeMode.byRows) {
-      const endIndex = startIndex + size - 1;
+      let size;
+      let endIndex;
+      if (typeof sizeOrEnd === 'number') {
+        size = sizeOrEnd;
+        endIndex = startIndex + size - 1;
+      } else {
+        endIndex = this._getIndex(sizeOrEnd);
+        if (startIndex > endIndex) {
+          [startIndex, endIndex] = [endIndex, startIndex];
+        }
+        size = endIndex - startIndex + 1;
+      }
       this._checkIndex(endIndex);
-
       return getRange(startIndex, size).map((index) =>
         this.getPositionCode(index)
       );
     } else if (mode === RangeMode.byColumns) {
+      let size;
+      let endIndex;
+      if (typeof sizeOrEnd === 'number') {
+        size = sizeOrEnd;
+        endIndex = startIndex + size - 1;
+      } else {
+        endIndex = this._getIndex(sizeOrEnd);
+        if (startIndex > endIndex) {
+          [startIndex, endIndex] = [endIndex, startIndex];
+        }
+        const startPosition = this.getPosition(startIndex);
+        const endPosition = this.getPosition(endIndex);
+        size =
+          (endPosition.column - startPosition.column) * this.rows -
+          startPosition.row +
+          endPosition.row +
+          1;
+      }
+      this._checkIndex(endIndex);
       const range: IPosition[] = [];
-      const position = this.getPosition(start);
+      const position = this.getPosition(startIndex);
       for (let i = 0; i < size; i++) {
         const newPosition: IPosition = {
           row: (position.row + i) % this.rows,
@@ -167,15 +195,13 @@ export class WellPlate<T = any> {
         };
         range.push(newPosition);
       }
-      this._checkPosition(range[range.length - 1]);
       return range.map(this.getPositionCode.bind(this));
     }
   }
 
   public getPositionCodeZone(start: string | number, end: string | number) {
-    let startIndex =
-      typeof start === 'number' ? start : this._getIndexFromCode(start);
-    let endIndex = typeof end === 'number' ? end : this._getIndexFromCode(end);
+    let startIndex = this._getIndex(start);
+    let endIndex = this._getIndex(end);
     if (startIndex > endIndex) {
       [startIndex, endIndex] = [endIndex, startIndex];
     }
@@ -290,6 +316,16 @@ export class WellPlate<T = any> {
 
   private _getIndexFromCode(wellCode: string) {
     return this.getIndex(this.getPosition(wellCode));
+  }
+
+  private _getIndex(position: number | string | IPosition) {
+    if (typeof position === 'number') {
+      return position;
+    }
+    if (typeof position === 'string') {
+      return this._getIndexFromCode(position);
+    }
+    return this.getIndex(position);
   }
 
   private _formatError() {

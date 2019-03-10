@@ -35,16 +35,37 @@ describe('WellPlate', () => {
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
     expect(wellPlate.getPositionCodeRange(16, 5)).toEqual(expected);
     expect(wellPlate.getPositionCodeRange('C5', 5)).toEqual(expected);
+    expect(wellPlate.getPositionCodeRange('C5', 'D3')).toEqual(expected);
+    expect(wellPlate.getPositionCodeRange('D3', 'C5')).toEqual(expected);
+    expect(
+      wellPlate.getPositionCodeRange(
+        { row: 3, column: 2 },
+        { row: 2, column: 4 }
+      )
+    ).toEqual(expected);
   });
 
   it('getCodeRange by columns', () => {
     const wellPlate = getWellPlate('5x6');
-    const expected = ['C5', 'D5', 'E5', 'A6'];
-    expect(wellPlate.getPositionCodeRange(16, 4, RangeMode.byColumns)).toEqual(
+    const expected = ['C5', 'D5', 'E5', 'A6', 'B6', 'C6', 'D6', 'E6'];
+    expect(wellPlate.getPositionCodeRange(16, 8, RangeMode.byColumns)).toEqual(
       expected
     );
     expect(
-      wellPlate.getPositionCodeRange('C5', 4, RangeMode.byColumns)
+      wellPlate.getPositionCodeRange('C5', 8, RangeMode.byColumns)
+    ).toEqual(expected);
+    expect(
+      wellPlate.getPositionCodeRange('C5', 'E6', RangeMode.byColumns)
+    ).toEqual(expected);
+    expect(
+      wellPlate.getPositionCodeRange('E6', 'C5', RangeMode.byColumns)
+    ).toEqual(expected);
+    expect(
+      wellPlate.getPositionCodeRange(
+        { row: 2, column: 4 },
+        { row: 4, column: 5 },
+        RangeMode.byColumns
+      )
     ).toEqual(expected);
   });
 
