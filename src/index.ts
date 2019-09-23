@@ -373,13 +373,6 @@ export class WellPlate<T = any> {
     return this.getIndex(this.getPosition(wellCode));
   }
 
-  private _getIndexByColumn(position: number | string | IPosition): number {
-    if (typeof position === 'number' || typeof position === 'string') {
-      position = this.getPosition(position);
-    }
-    return position.column * this.rows + position.row;
-  }
-
   private _formatError() {
     switch (this.positionFormat) {
       case PositionFormat.LetterNumber: {
