@@ -177,7 +177,7 @@ export class WellPlate<T = any> {
     start: number | string | IPosition,
     sizeOrEnd: number | string | IPosition,
     mode: RangeMode = RangeMode.byRows
-  ) {
+  ): string[] {
     let startIndex = this.getIndex(start);
     this._checkIndex(startIndex);
     if (mode === RangeMode.byRows) {
@@ -230,6 +230,8 @@ export class WellPlate<T = any> {
         range.push(newPosition);
       }
       return range.map(this.getPositionCode.bind(this));
+    } else {
+      throw new Error('Unexperted range mode');
     }
   }
 
