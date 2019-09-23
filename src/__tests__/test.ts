@@ -60,6 +60,9 @@ describe('WellPlate', () => {
     expect(wellPlate.getPositionCodeRange(16, 29, RangeMode.byColumns)).toEqual(
       expected
     );
+    expect(wellPlate.getPositionCodeRange(29, 16, RangeMode.byColumns)).toEqual(
+      expected
+    );
     expect(
       wellPlate.getPositionCodeRange('C5', 'E6', RangeMode.byColumns)
     ).toEqual(expected);
