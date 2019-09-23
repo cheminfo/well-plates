@@ -1,3 +1,12 @@
+## [3.3.3](https://github.com/cheminfo/well-plates/compare/v3.3.2...v3.3.3) (2019-09-23)
+
+
+### Bug Fixes
+
+* remove ambiguity in return type of getPositionCodeRange ([9327f5f](https://github.com/cheminfo/well-plates/commit/9327f5f))
+
+
+
 ## [3.3.2](https://github.com/cheminfo/well-plates/compare/v3.3.1...v3.3.2) (2019-09-23)
 
 
