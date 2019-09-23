@@ -41,3 +41,4 @@ jspm_packages
 
 lib
 lib-es6
+package-lock.json

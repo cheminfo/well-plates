@@ -30,6 +30,15 @@ describe('WellPlate', () => {
     );
   });
 
+  it('getPositionCode number-number format', () => {
+    const wellPlate = getWellPlate('9x9', PositionFormat.NumberNumber);
+    expect(wellPlate.getPositionCode(55)).toEqual('7.2');
+    expect(wellPlate.getPositionCode({ row: 2, column: 5 })).toEqual('3.6');
+    expect(() => wellPlate.getPositionCode({ row: 7, column: 9 })).toThrowError(
+      /well position is out of range/
+    );
+  });
+
   it('getCodeRange by rows', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];

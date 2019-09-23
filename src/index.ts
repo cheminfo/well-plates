@@ -26,7 +26,12 @@ export enum PositionFormat {
    * A letter + a number. When this format is used, the position will be represented
    * as a string with one letter + one number, representing the row and column position. For example B3 is for second row, 3rd column.
    */
-  LetterNumber = 'LETTER_NUMBER'
+  LetterNumber = 'LETTER_NUMBER',
+  /**
+   * A number + a number. When this format is used, the position will be represented
+   * as number for the row and a number for the column. For example 2-4 is for secord row, 4th column.
+   */
+  NumberNumber = 'NUMBER_NUMBER'
 }
 
 export enum RangeMode {
@@ -121,18 +126,37 @@ export class WellPlate<T = any> {
   public getPositionCode(arg1: number | IPosition) {
     if (typeof arg1 === 'number') {
       this._checkIndex(arg1);
-      if (this.positionFormat === PositionFormat.Sequential) {
-        return String(arg1 + 1);
-      } else {
-        const position = this._getPositionFromIndex(arg1);
-        return this._letterNumberCodeFromPosition(position);
+      switch (this.positionFormat) {
+        case PositionFormat.Sequential: {
+          return String(arg1 + 1);
+        }
+        case PositionFormat.LetterNumber: {
+          const position = this._getPositionFromIndex(arg1);
+          return this._letterNumberCodeFromPosition(position);
+        }
+        case PositionFormat.NumberNumber: {
+          const position = this._getPositionFromIndex(arg1);
+          return this._numberNumberCodeFromPosition(position);
+        }
+        default: {
+          throw new Error('Unreachable');
+        }
       }
     } else {
       this._checkPosition(arg1);
-      if (this.positionFormat === PositionFormat.Sequential) {
-        return this._sequentialCodeFromPosition(arg1);
-      } else {
-        return this._letterNumberCodeFromPosition(arg1);
+      switch (this.positionFormat) {
+        case PositionFormat.Sequential: {
+          return this._sequentialCodeFromPosition(arg1);
+        }
+        case PositionFormat.LetterNumber: {
+          return this._letterNumberCodeFromPosition(arg1);
+        }
+        case PositionFormat.NumberNumber: {
+          return this._numberNumberCodeFromPosition(arg1);
+        }
+        default: {
+          throw new Error('Unreachable');
+        }
       }
     }
   }
@@ -369,5 +393,9 @@ export class WellPlate<T = any> {
     const startCharCode = 'A'.charCodeAt(0);
     const letter = String.fromCharCode(startCharCode + position.row);
     return letter + (position.column + 1);
+  }
+
+  private _numberNumberCodeFromPosition(position: IPosition) {
+    return `${position.row + 1}.${position.column + 1}`;
   }
 }
