@@ -54,6 +54,7 @@ export interface IWellPlateConfig {
    * Default: `PositionFormat.LetterNumber`
    */
   positionFormat?: PositionFormat;
+  separator?: string;
 }
 
 /**
@@ -76,6 +77,11 @@ export class WellPlate<T = any> {
   public readonly positionFormat: PositionFormat;
 
   /**
+   * Separator used in some position formats
+   */
+  public readonly separator: string;
+
+  /**
    * Data associated to a given well
    */
   public readonly data: T[];
@@ -90,6 +96,7 @@ export class WellPlate<T = any> {
     this.columns = config.columns;
     const { positionFormat = PositionFormat.LetterNumber } = config;
     this.positionFormat = positionFormat;
+    this.separator = config.separator || '.';
     this.size = this.rows * this.columns;
     this.data = new Array(this.size);
   }
@@ -396,6 +403,6 @@ export class WellPlate<T = any> {
   }
 
   private _numberNumberCodeFromPosition(position: IPosition) {
-    return `${position.row + 1}.${position.column + 1}`;
+    return `${position.row + 1}${this.separator}${position.column + 1}`;
   }
 }
