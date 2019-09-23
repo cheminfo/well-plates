@@ -1,3 +1,7 @@
+## [3.3.1](https://github.com/cheminfo/well-plates/compare/v3.3.0...v3.3.1) (2019-09-23)
+
+
+
 # [3.0.0](https://github.com/cheminfo/well-plates/compare/v2.0.0...v3.0.0) (2018-11-08)
 
 
