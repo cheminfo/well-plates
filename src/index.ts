@@ -170,62 +170,60 @@ export class WellPlate<T = any> {
 
   /**
    * Get a range of well position codes
-   * @param startIndex The index where the range starts
-   * @param size The number of sequential positions to include in the range.
+   * @param startIndex The first index to include in the range
+   * @param endIndex The last index to include in the range
    */
-  public getPositionCodeRange(
-    start: number | string | IPosition,
-    sizeOrEnd: number | string | IPosition,
+  public getPositionCodeRange<Targ extends number | string | IPosition>(
+    start: Targ,
+    end: Targ,
     mode: RangeMode = RangeMode.byRows
   ): string[] {
-    let startIndex = this.getIndex(start);
-    this._checkIndex(startIndex);
+    this._checkIndex(this.getIndex(start));
+    this._checkIndex(this.getIndex(end));
     if (mode === RangeMode.byRows) {
-      let size;
-      let endIndex;
-      if (typeof sizeOrEnd === 'number') {
-        size = sizeOrEnd;
-        endIndex = startIndex + size - 1;
-      } else {
-        endIndex = this.getIndex(sizeOrEnd);
-        if (startIndex > endIndex) {
-          [startIndex, endIndex] = [endIndex, startIndex];
-        }
-        size = endIndex - startIndex + 1;
+      let startIndex = this.getIndex(start);
+      let endIndex = this.getIndex(end);
+      if (startIndex > endIndex) {
+        [startIndex, endIndex] = [endIndex, startIndex];
       }
+      const size = endIndex - startIndex + 1;
       this._checkIndex(endIndex);
       return getRange(startIndex, size).map((index) =>
         this.getPositionCode(index)
       );
     } else if (mode === RangeMode.byColumns) {
-      let size;
-      let endIndex;
-      if (typeof sizeOrEnd === 'number') {
-        size = sizeOrEnd;
-        endIndex = startIndex + size - 1;
-      } else {
-        endIndex = this.getIndex(sizeOrEnd);
-        if (
-          this._getIndexByColumn(startIndex) > this._getIndexByColumn(endIndex)
-        ) {
-          [startIndex, endIndex] = [endIndex, startIndex];
-        }
-        const startPosition = this.getPosition(startIndex);
-        const endPosition = this.getPosition(endIndex);
-        size =
-          (endPosition.column - startPosition.column) * this.rows -
-          startPosition.row +
-          endPosition.row +
-          1;
+      let startPosition = this.getPosition(start);
+      let endPosition = this.getPosition(end);
+      const transposed = new WellPlate({
+        rows: this.columns,
+        columns: this.rows,
+        positionFormat: this.positionFormat,
+      });
+
+      let size =
+        transposed.getIndex({
+          row: endPosition.column,
+          column: endPosition.row,
+        }) -
+        transposed.getIndex({
+          row: startPosition.column,
+          column: startPosition.row,
+        });
+
+      if (size < 0) {
+        size = -size;
+        [startPosition, endPosition] = [endPosition, startPosition];
       }
-      this._checkIndex(endIndex);
+      size = size + 1;
+
       const range: IPosition[] = [];
-      const position = this.getPosition(startIndex);
 
       for (let i = 0; i < size; i++) {
         const newPosition: IPosition = {
-          row: (position.row + i) % this.rows,
-          column: position.column + Math.floor((i + position.row) / this.rows),
+          row: (startPosition.row + i) % this.rows,
+          column:
+            startPosition.column +
+            Math.floor((i + startPosition.row) / this.rows),
         };
         range.push(newPosition);
       }
@@ -289,11 +287,11 @@ export class WellPlate<T = any> {
    * Get the well position given a formatted well position code.
    * @param wellCode The position code.
    */
-  public getPosition(wellCode: string | number): IPosition {
+  public getPosition(wellCode: string | number | IPosition): IPosition {
     if (typeof wellCode === 'number') {
       this._checkIndex(wellCode);
       return this._getPositionFromIndex(wellCode);
-    } else {
+    } else if (typeof wellCode === 'string') {
       if (this.positionFormat === PositionFormat.NumberNumber) {
         const reg = /^(\d+).(\d+)$/;
         const m = reg.exec(wellCode);
@@ -332,6 +330,8 @@ export class WellPlate<T = any> {
         this._checkPosition(position);
         return position;
       }
+    } else {
+      return wellCode;
     }
   }
 
