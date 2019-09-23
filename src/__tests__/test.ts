@@ -22,9 +22,9 @@ describe('WellPlate', () => {
   });
 
   it('getPositionCode sequential format', () => {
-    const wellPlate = getWellPlate('9x9', PositionFormat.Sequential);
-    expect(wellPlate.getPositionCode(55)).toEqual('56');
-    expect(wellPlate.getPositionCode({ row: 2, column: 5 })).toEqual('24');
+    const wellPlate = getWellPlate('6x8', PositionFormat.Sequential);
+    expect(wellPlate.getPositionCode(18)).toEqual('19');
+    expect(wellPlate.getPositionCode({ row: 2, column: 5 })).toEqual('22');
     expect(() => wellPlate.getPositionCode({ row: 7, column: 9 })).toThrowError(
       /well position is out of range/
     );
@@ -91,7 +91,7 @@ describe('WellPlate', () => {
       'B2',
       'B3',
       'C2',
-      'C3'
+      'C3',
     ]);
   });
 
@@ -105,7 +105,7 @@ describe('WellPlate', () => {
       'B2',
       'B3',
       'C2',
-      'C3'
+      'C3',
     ]);
   });
 
@@ -113,12 +113,12 @@ describe('WellPlate', () => {
     const wellPlate = getWellPlate('4x6');
     expect(wellPlate.getPosition('A6')).toEqual({
       row: 0,
-      column: 5
+      column: 5,
     });
 
     expect(wellPlate.getPosition('C3')).toEqual({
       row: 2,
-      column: 2
+      column: 2,
     });
 
     expect(() => wellPlate.getPosition('E1')).toThrowError(/out of range/);
@@ -154,15 +154,15 @@ describe('WellPlate', () => {
   });
 
   it('getPosition Sequential format', () => {
-    const wellPlate = getWellPlate('9x9', PositionFormat.Sequential);
+    const wellPlate = getWellPlate('6x8', PositionFormat.Sequential);
     expect(wellPlate.getPosition('9')).toEqual({
-      row: 0,
-      column: 8
+      row: 1,
+      column: 0,
     });
 
-    expect(wellPlate.getPosition('77')).toEqual({
-      row: 8,
-      column: 4
+    expect(wellPlate.getPosition('45')).toEqual({
+      row: 5,
+      column: 4,
     });
 
     expect(() => wellPlate.getPosition('82')).toThrowError(/out of range/);
@@ -178,12 +178,12 @@ describe('WellPlate', () => {
     const wellPlate = getWellPlate('9x9', PositionFormat.NumberNumber);
     expect(wellPlate.getPosition('1.9')).toEqual({
       row: 0,
-      column: 8
+      column: 8,
     });
 
     expect(wellPlate.getPosition('7.5')).toEqual({
       row: 6,
-      column: 4
+      column: 4,
     });
 
     expect(() => wellPlate.getPosition('10.1')).toThrowError(/out of range/);
@@ -208,7 +208,7 @@ describe('WellPlate', () => {
       '9',
       '10',
       '11',
-      '12'
+      '12',
     ];
     expect(wellPlate.columnLabels).toEqual(expected);
 
@@ -243,21 +243,26 @@ describe('WellPlate', () => {
         index: 0,
         position: { row: 0, column: 0 },
         code: 'A1',
-        data: undefined
+        data: undefined,
       },
       {
         index: 1,
         position: { row: 0, column: 1 },
         code: 'A2',
-        data: undefined
+        data: undefined,
       },
       {
         index: 2,
         position: { row: 1, column: 0 },
         code: 'B1',
-        data: undefined
+        data: undefined,
       },
-      { index: 3, position: { row: 1, column: 1 }, code: 'B2', data: undefined }
+      {
+        index: 3,
+        position: { row: 1, column: 1 },
+        code: 'B2',
+        data: undefined,
+      },
     ]);
   });
 });
@@ -273,6 +278,6 @@ function getWellPlate(
   return new WellPlate({
     rows: parseInt(result[1], 10),
     columns: parseInt(result[2], 10),
-    positionFormat
+    positionFormat,
   });
 }

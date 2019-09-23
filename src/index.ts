@@ -31,7 +31,7 @@ export enum PositionFormat {
    * A number + a number. When this format is used, the position will be represented
    * as number for the row and a number for the column. For example 2-4 is for secord row, 4th column.
    */
-  NumberNumber = 'NUMBER_NUMBER'
+  NumberNumber = 'NUMBER_NUMBER',
 }
 
 export enum RangeMode {
@@ -44,7 +44,7 @@ export enum RangeMode {
   /**
    * Process range column by column
    */
-  byColumns = 'BY_COLUMNS'
+  byColumns = 'BY_COLUMNS',
 }
 
 export interface IWellPlateConfig {
@@ -115,10 +115,10 @@ export class WellPlate<T = any> {
                 index: i,
                 position: this._getPositionFromIndex(i),
                 code: this.getPositionCode(i),
-                data: this.getData(i)
-              }
+                data: this.getData(i),
+              },
         };
-      }
+      },
     };
   }
 
@@ -225,7 +225,7 @@ export class WellPlate<T = any> {
       for (let i = 0; i < size; i++) {
         const newPosition: IPosition = {
           row: (position.row + i) % this.rows,
-          column: position.column + Math.floor((i + position.row) / this.rows)
+          column: position.column + Math.floor((i + position.row) / this.rows),
         };
         range.push(newPosition);
       }
@@ -240,11 +240,11 @@ export class WellPlate<T = any> {
     this._checkPosition(endPosition);
     const upperLeft = {
       row: Math.min(startPosition.row, endPosition.row),
-      column: Math.min(startPosition.column, endPosition.column)
+      column: Math.min(startPosition.column, endPosition.column),
     };
     const bottomRight = {
       row: Math.max(startPosition.row, endPosition.row),
-      column: Math.max(startPosition.column, endPosition.column)
+      column: Math.max(startPosition.column, endPosition.column),
     };
 
     const width = bottomRight.column - upperLeft.column + 1;
@@ -255,7 +255,7 @@ export class WellPlate<T = any> {
         range.push(
           this.getPositionCode({
             row: upperLeft.row + j,
-            column: upperLeft.column + i
+            column: upperLeft.column + i,
           })
         );
       }
@@ -301,7 +301,7 @@ export class WellPlate<T = any> {
         }
         const position = {
           row: +m[1] - 1,
-          column: +m[2] - 1
+          column: +m[2] - 1,
         };
         this._checkPosition(position);
         return position;
@@ -325,7 +325,7 @@ export class WellPlate<T = any> {
         }
         const position = {
           row: m[1].charCodeAt(0) - 'A'.charCodeAt(0),
-          column: +m[2] - 1
+          column: +m[2] - 1,
         };
         this._checkPosition(position);
         return position;
@@ -363,7 +363,7 @@ export class WellPlate<T = any> {
   private _getPositionFromIndex(index: number): IPosition {
     return {
       row: Math.floor(index / this.columns),
-      column: index % this.columns
+      column: index % this.columns,
     };
   }
 
@@ -414,7 +414,7 @@ export class WellPlate<T = any> {
   }
 
   private _sequentialCodeFromPosition(position: IPosition) {
-    return String(position.row * this.rows + position.column + 1);
+    return String(position.row * this.columns + position.column + 1);
   }
 
   private _letterNumberCodeFromPosition(position: IPosition) {
