@@ -1,3 +1,12 @@
+## [3.3.2](https://github.com/cheminfo/well-plates/compare/v3.3.1...v3.3.2) (2019-09-23)
+
+
+### Bug Fixes
+
+* fix transform of position into sequential code ([b051806](https://github.com/cheminfo/well-plates/commit/b051806))
+
+
+
 ## [3.3.1](https://github.com/cheminfo/well-plates/compare/v3.3.0...v3.3.1) (2019-09-23)
 
 
