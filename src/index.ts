@@ -221,6 +221,7 @@ export class WellPlate<T = any> {
       this._checkIndex(endIndex);
       const range: IPosition[] = [];
       const position = this.getPosition(startIndex);
+
       for (let i = 0; i < size; i++) {
         const newPosition: IPosition = {
           row: (position.row + i) % this.rows,
@@ -291,29 +292,44 @@ export class WellPlate<T = any> {
       this._checkIndex(wellCode);
       return this._getPositionFromIndex(wellCode);
     } else {
-      const reg = /^([A-Z])(\d+)$/;
-      const m = reg.exec(wellCode);
-      if (m === null) {
-        if (this.positionFormat !== PositionFormat.Sequential) {
-          this._formatError();
+      if (this.positionFormat === PositionFormat.NumberNumber) {
+        const reg = /^(\d+).(\d+)$/;
+        const m = reg.exec(wellCode);
+        const hasSeparator = wellCode.indexOf(this.separator) !== -1;
+        if (!hasSeparator || m === null) {
+          throw this._formatError();
         }
-        const wellIndex = +wellCode - 1;
-        if (Number.isNaN(wellIndex)) {
-          this._formatError();
+        const position = {
+          row: +m[1] - 1,
+          column: +m[2] - 1
+        };
+        this._checkPosition(position);
+        return position;
+      } else {
+        const reg = /^([A-Z])(\d+)$/;
+        const m = reg.exec(wellCode);
+        if (m === null) {
+          if (this.positionFormat !== PositionFormat.Sequential) {
+            throw this._formatError();
+          }
+          const wellIndex = +wellCode - 1;
+          if (Number.isNaN(wellIndex)) {
+            throw this._formatError();
+          }
+          this._checkIndex(wellIndex);
+          return this._getPositionFromIndex(wellIndex);
         }
-        this._checkIndex(wellIndex);
-        return this._getPositionFromIndex(wellIndex);
-      }
 
-      if (this.positionFormat !== PositionFormat.LetterNumber) {
-        this._formatError();
+        if (this.positionFormat !== PositionFormat.LetterNumber) {
+          throw this._formatError();
+        }
+        const position = {
+          row: m[1].charCodeAt(0) - 'A'.charCodeAt(0),
+          column: +m[2] - 1
+        };
+        this._checkPosition(position);
+        return position;
       }
-      const position = {
-        row: m[1].charCodeAt(0) - 'A'.charCodeAt(0),
-        column: +m[2] - 1
-      };
-      this._checkPosition(position);
-      return position;
     }
   }
 
@@ -365,12 +381,17 @@ export class WellPlate<T = any> {
   private _formatError() {
     switch (this.positionFormat) {
       case PositionFormat.LetterNumber: {
-        throw new Error(
+        return new Error(
           'invalid well code format. Must be a letter followed by a number'
         );
       }
       case PositionFormat.Sequential: {
-        throw new Error('invalid well code format. Must be a number');
+        return new Error('invalid well code format. Must be a number');
+      }
+      case PositionFormat.NumberNumber: {
+        return new Error(
+          `invalid well code format. Must be 2 numbers separated by a ${this.separator}`
+        );
       }
     }
   }

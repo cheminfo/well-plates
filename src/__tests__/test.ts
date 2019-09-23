@@ -136,6 +136,11 @@ describe('WellPlate', () => {
     expect(wellPlate.getIndex('A6')).toEqual(5);
   });
 
+  it('get index with number-number format', () => {
+    const wellPlate = getWellPlate('4x6', PositionFormat.NumberNumber);
+    expect(wellPlate.getIndex('2.4')).toEqual(9);
+  });
+
   it('sequential and letterNumber formats', () => {
     const wellPlateSeq = getWellPlate('9x9', PositionFormat.Sequential);
     expect(wellPlateSeq.positionFormat).toEqual(PositionFormat.Sequential);
@@ -166,6 +171,26 @@ describe('WellPlate', () => {
     );
     expect(() => wellPlate.getPosition('inv')).toThrowError(
       /invalid well code format. Must be a number/
+    );
+  });
+
+  it('getPosition NumberNumber format', () => {
+    const wellPlate = getWellPlate('9x9', PositionFormat.NumberNumber);
+    expect(wellPlate.getPosition('1.9')).toEqual({
+      row: 0,
+      column: 8
+    });
+
+    expect(wellPlate.getPosition('7.5')).toEqual({
+      row: 6,
+      column: 4
+    });
+
+    expect(() => wellPlate.getPosition('10.1')).toThrowError(/out of range/);
+    expect(() => wellPlate.getPosition('1.0')).toThrowError(/out of range/);
+    expect(() => wellPlate.getPosition('0.1')).toThrowError(/out of range/);
+    expect(() => wellPlate.getPosition('A1')).toThrowError(
+      'invalid well code format. Must be 2 numbers separated by a .'
     );
   });
 
