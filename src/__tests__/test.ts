@@ -95,6 +95,20 @@ describe('WellPlate', () => {
     ]);
   });
 
+  it('getPositionCodeZone with indices', () => {
+    const wellPlate = getWellPlate('4x6');
+    const expected = ['C2', 'C3', 'C4', 'D2', 'D3', 'D4'];
+    expect(wellPlate.getPositionCodeZone(13, 21)).toEqual(expected);
+    expect(wellPlate.getPositionCodeZone(21, 13)).toEqual(expected);
+    expect(wellPlate.getPositionCodeZone(21, 21)).toEqual(['D4']);
+    expect(wellPlate.getPositionCodeZone(8, 13)).toEqual([
+      'B2',
+      'B3',
+      'C2',
+      'C3'
+    ]);
+  });
+
   it('getPosition', () => {
     const wellPlate = getWellPlate('4x6');
     expect(wellPlate.getPosition('A6')).toEqual({
