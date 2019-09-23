@@ -130,7 +130,7 @@ export class WellPlate<T = any> {
    * @param arg1 - The index position of the well, starting with 0, or the position of the well, see [[Position]]
    * @returns The code of the well position. The format depends on the PositionFormat, see [[wellCodeFormat]]
    */
-  public getPositionCode(arg1: number | IPosition) {
+  public getPositionCode(arg1: number | IPosition): string {
     if (typeof arg1 === 'number') {
       this._checkIndex(arg1);
       switch (this.positionFormat) {
@@ -335,8 +335,8 @@ export class WellPlate<T = any> {
     }
   }
 
-  get columnLabels() {
-    const result: string[] = [];
+  get columnLabels(): string[] {
+    const result = [];
     let label = 1;
     for (let i = 0; i < this.columns; i++) {
       result.push(String(label++));
@@ -344,9 +344,9 @@ export class WellPlate<T = any> {
     return result;
   }
 
-  get rowLabels() {
+  get rowLabels(): string[] {
     if (this.positionFormat !== PositionFormat.LetterNumber) {
-      const result: string[] = [];
+      const result = [];
       let label = 1;
       for (let i = 0; i < this.rows; i++) {
         result.push(String(label++));
@@ -369,11 +369,11 @@ export class WellPlate<T = any> {
     };
   }
 
-  private _getIndexFromCode(wellCode: string) {
+  private _getIndexFromCode(wellCode: string): number {
     return this.getIndex(this.getPosition(wellCode));
   }
 
-  private _getIndexByColumn(position: number | string | IPosition) {
+  private _getIndexByColumn(position: number | string | IPosition): number {
     if (typeof position === 'number' || typeof position === 'string') {
       position = this.getPosition(position);
     }
@@ -415,17 +415,17 @@ export class WellPlate<T = any> {
     }
   }
 
-  private _sequentialCodeFromPosition(position: IPosition) {
+  private _sequentialCodeFromPosition(position: IPosition): string {
     return String(position.row * this.columns + position.column + 1);
   }
 
-  private _letterNumberCodeFromPosition(position: IPosition) {
+  private _letterNumberCodeFromPosition(position: IPosition): string {
     const startCharCode = 'A'.charCodeAt(0);
     const letter = String.fromCharCode(startCharCode + position.row);
     return letter + (position.column + 1);
   }
 
-  private _numberNumberCodeFromPosition(position: IPosition) {
+  private _numberNumberCodeFromPosition(position: IPosition): string {
     return `${position.row + 1}${this.separator}${position.column + 1}`;
   }
 }
