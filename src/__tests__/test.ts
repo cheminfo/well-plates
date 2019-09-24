@@ -46,6 +46,7 @@ describe('WellPlate', () => {
     expect(wellPlate.getPositionCodeRange(20, 16)).toEqual(expected);
     expect(wellPlate.getPositionCodeRange('C5', 'D3')).toEqual(expected);
     expect(wellPlate.getPositionCodeRange('D3', 'C5')).toEqual(expected);
+    expect(wellPlate.getPositionCodeRange('C5', 20)).toEqual(expected);
     expect(
       wellPlate.getPositionCodeRange(
         { row: 3, column: 2 },

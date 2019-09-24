@@ -169,20 +169,21 @@ export class WellPlate<T = any> {
   }
 
   /**
-   * Get a range of well position codes
-   * @param startIndex The first index to include in the range
-   * @param endIndex The last index to include in the range
+   * Get a range of well position codes. Inverting the start and end positions
+   * @param bound1 One of the 2 bounding position to include in the range
+   * @param bound2 The other of the 2 bounding position to include in the range
+   * @param mode If the range sholud be along rows or columns
    */
-  public getPositionCodeRange<Targ extends number | string | IPosition>(
-    start: Targ,
-    end: Targ,
+  public getPositionCodeRange(
+    bound1: number | string | IPosition,
+    bound2: number | string | IPosition,
     mode: RangeMode = RangeMode.byRows
   ): string[] {
-    this._checkIndex(this.getIndex(start));
-    this._checkIndex(this.getIndex(end));
+    this._checkIndex(this.getIndex(bound1));
+    this._checkIndex(this.getIndex(bound2));
     if (mode === RangeMode.byRows) {
-      let startIndex = this.getIndex(start);
-      let endIndex = this.getIndex(end);
+      let startIndex = this.getIndex(bound1);
+      let endIndex = this.getIndex(bound2);
       if (startIndex > endIndex) {
         [startIndex, endIndex] = [endIndex, startIndex];
       }
@@ -192,8 +193,8 @@ export class WellPlate<T = any> {
         this.getPositionCode(index)
       );
     } else if (mode === RangeMode.byColumns) {
-      let startPosition = this.getPosition(start);
-      let endPosition = this.getPosition(end);
+      let startPosition = this.getPosition(bound1);
+      let endPosition = this.getPosition(bound2);
       const transposed = new WellPlate({
         rows: this.columns,
         columns: this.rows,
@@ -233,9 +234,17 @@ export class WellPlate<T = any> {
     }
   }
 
-  public getPositionCodeZone(start: string | number, end: string | number) {
-    const startPosition = this.getPosition(start);
-    const endPosition = this.getPosition(end);
+  /**
+   * Get a zone of well position codes. A zone is a rectangle in the well plate.
+   * @param bound1 One of the 2 bounding position to include in the zone
+   * @param bound2 The other of the 2 bounding position to include in the zone
+   */
+  public getPositionCodeZone(
+    bound1: string | number | IPosition,
+    bound2: string | number | IPosition
+  ) {
+    const startPosition = this.getPosition(bound1);
+    const endPosition = this.getPosition(bound2);
     this._checkPosition(startPosition);
     this._checkPosition(endPosition);
     const upperLeft = {
