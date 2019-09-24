@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/cheminfo/well-plates/compare/v3.3.3...v4.0.0) (2019-09-24)
+
+
+* fix get range by column ([8903512](https://github.com/cheminfo/well-plates/commit/8903512))
+
+
+### BREAKING CHANGES
+
+* getPositionCodeRange no longer accepts a size as second argument. Instead it can accept indices as start end end argument
+
+
+
 ## [3.3.3](https://github.com/cheminfo/well-plates/compare/v3.3.2...v3.3.3) (2019-09-23)
 
 
