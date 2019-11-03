@@ -1,4 +1,4 @@
-import { PositionFormat, RangeMode, WellPlate } from '..';
+import { IterationOrder, PositionFormat, RangeMode, WellPlate } from '..';
 
 describe('WellPlate', () => {
   it('size', () => {
@@ -238,7 +238,7 @@ describe('WellPlate', () => {
   });
 
   it('iterator', () => {
-    const wellPlate = getWellPlate('2x2');
+    const wellPlate = getWellPlate('2x3');
     expect([...wellPlate]).toEqual([
       {
         index: 0,
@@ -254,14 +254,72 @@ describe('WellPlate', () => {
       },
       {
         index: 2,
+        position: { row: 0, column: 2 },
+        code: 'A3',
+        data: undefined,
+      },
+      {
+        index: 3,
         position: { row: 1, column: 0 },
         code: 'B1',
         data: undefined,
       },
       {
-        index: 3,
+        index: 4,
         position: { row: 1, column: 1 },
         code: 'B2',
+        data: undefined,
+      },
+      {
+        index: 5,
+        position: { row: 1, column: 2 },
+        code: 'B3',
+        data: undefined,
+      },
+    ]);
+  });
+
+  it('iterator by rows', () => {
+    const wellPlate = getWellPlate(
+      '2x3',
+      PositionFormat.LetterNumber,
+      IterationOrder.ByRow
+    );
+    expect([...wellPlate]).toEqual([
+      {
+        index: 0,
+        position: { row: 0, column: 0 },
+        code: 'A1',
+        data: undefined,
+      },
+      {
+        index: 3,
+        position: { row: 1, column: 0 },
+        code: 'B1',
+        data: undefined,
+      },
+      {
+        index: 1,
+        position: { row: 0, column: 1 },
+        code: 'A2',
+        data: undefined,
+      },
+      {
+        index: 4,
+        position: { row: 1, column: 1 },
+        code: 'B2',
+        data: undefined,
+      },
+      {
+        index: 2,
+        position: { row: 0, column: 2 },
+        code: 'A3',
+        data: undefined,
+      },
+      {
+        index: 5,
+        position: { row: 1, column: 2 },
+        code: 'B3',
         data: undefined,
       },
     ]);
@@ -270,7 +328,8 @@ describe('WellPlate', () => {
 
 function getWellPlate(
   type: string,
-  positionFormat = PositionFormat.LetterNumber
+  positionFormat = PositionFormat.LetterNumber,
+  iterationOrder = IterationOrder.ByColumn
 ) {
   const result = /^(\d+)x(\d+)$/.exec(type);
   if (!result) {
@@ -280,5 +339,6 @@ function getWellPlate(
     rows: parseInt(result[1], 10),
     columns: parseInt(result[2], 10),
     positionFormat,
+    iterationOrder,
   });
 }

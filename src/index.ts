@@ -34,6 +34,21 @@ export enum PositionFormat {
   NumberNumber = 'NUMBER_NUMBER',
 }
 
+/**
+ * The iteration order
+ * Determines in which order iteration over wells is performed
+ */
+export enum IterationOrder {
+  /**
+   * Jump from one column to the next when iterating
+   */
+  ByColumn = 'BY_COLUMN',
+  /**
+   * Jump from one row to the next when iterating
+   */
+  ByRow = 'BY_ROW',
+}
+
 export enum RangeMode {
   /**
    * Process ranges row by row
@@ -54,6 +69,10 @@ export interface IWellPlateConfig {
    * Default: `PositionFormat.LetterNumber`
    */
   positionFormat?: PositionFormat;
+  /**
+   * Default: `IterationOrder.ByColumn`
+   */
+  iterationOrder?: IterationOrder;
   separator?: string;
 }
 
@@ -77,6 +96,11 @@ export class WellPlate<T = any> {
   public readonly positionFormat: PositionFormat;
 
   /**
+   * The iteration method used for this well plate
+   */
+  public readonly iterationOrder: IterationOrder;
+
+  /**
    * Separator used in some position formats
    */
   public readonly separator: string;
@@ -94,8 +118,12 @@ export class WellPlate<T = any> {
   constructor(config: IWellPlateConfig) {
     this.rows = config.rows;
     this.columns = config.columns;
-    const { positionFormat = PositionFormat.LetterNumber } = config;
+    const {
+      positionFormat = PositionFormat.LetterNumber,
+      iterationOrder = IterationOrder.ByColumn,
+    } = config;
     this.positionFormat = positionFormat;
+    this.iterationOrder = iterationOrder;
     this.separator = config.separator || '.';
     this.size = this.rows * this.columns;
     this.data = new Array(this.size);
@@ -103,19 +131,25 @@ export class WellPlate<T = any> {
 
   public [Symbol.iterator]() {
     let i = -1;
+    let realIndex = i;
     return {
       next: () => {
         i++;
+        if (this.iterationOrder === IterationOrder.ByRow) {
+          realIndex = this.getTransposedIndex(i);
+        } else {
+          realIndex = i;
+        }
         const done = i === this.size;
         return {
           done,
           value: done
             ? null
             : {
-                index: i,
-                position: this._getPositionFromIndex(i),
-                code: this.getPositionCode(i),
-                data: this.getData(i),
+                index: realIndex,
+                position: this._getPositionFromIndex(realIndex),
+                code: this.getPositionCode(realIndex),
+                data: this.getData(realIndex),
               },
         };
       },
@@ -342,6 +376,19 @@ export class WellPlate<T = any> {
     } else {
       return wellCode;
     }
+  }
+
+  /**
+   * This library works with indices that increment by jumping from one column to the next
+   * If you own index works by jumping from one row to the next, you can use this method to transform your index.
+   * This is especially useful to iterate on portions of the plates by row instead of by column
+   * @param byRowIndex The index by row
+   * @returns The index by column, such as used by the library
+   */
+  public getTransposedIndex(byRowIndex: number) {
+    const row = byRowIndex % this.rows;
+    const column = Math.floor(byRowIndex / this.rows);
+    return row * this.columns + column;
   }
 
   get columnLabels(): string[] {
