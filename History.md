@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/cheminfo/well-plates/compare/v4.0.0...v4.1.0) (2019-11-03)
+
+
+### Features
+
+* add getTransposedIndex and option for iteration order ([35ff1c3](https://github.com/cheminfo/well-plates/commit/35ff1c3458ffd0a194c7a6383ed33d996d9e23e9))
+
+
+
 # [4.0.0](https://github.com/cheminfo/well-plates/compare/v3.3.3...v4.0.0) (2019-09-24)
 
 
