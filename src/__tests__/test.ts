@@ -135,6 +135,12 @@ describe('WellPlate', () => {
   it('getIndex', () => {
     const wellPlate = getWellPlate('4x6');
     expect(wellPlate.getIndex('A6')).toEqual(5);
+    expect(wellPlate.getIndex(23)).toEqual(23);
+    expect(() => wellPlate.getIndex('F1')).toThrowError(/out of range/);
+    expect(() => wellPlate.getIndex({
+      row: 4, column: 0
+    })).toThrowError(/out of range/);
+    expect(() => wellPlate.getIndex(24)).toThrowError(/out of range/);
   });
 
   it('get index with number-number format', () => {
