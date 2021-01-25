@@ -1,5 +1,5 @@
 import babel from 'rollup-plugin-babel';
-import minify from 'rollup-plugin-babel-minify';
+import { terser } from 'rollup-plugin-terser';
 
 const output = {
   file: 'dist/well-plate.js',
@@ -11,10 +11,6 @@ const outputMinified = Object.assign({}, output, {
   file: 'dist/well-plate.min.js',
   sourcemap: true
 });
-
-const minifyConfig = {
-  comments: false
-};
 
 const babelConfig = {
   presets: [
@@ -44,6 +40,6 @@ export default [
   {
     input: inputFile,
     output: outputMinified,
-    plugins: [babel(babelConfig), minify(minifyConfig)]
+    plugins: [babel(babelConfig), terser()]
   }
 ];
