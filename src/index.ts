@@ -115,7 +115,7 @@ export class WellPlate<T = any> {
    */
   private size: number;
 
-  constructor(config: IWellPlateConfig) {
+  public constructor(config: IWellPlateConfig) {
     this.rows = config.rows;
     this.columns = config.columns;
     const {
@@ -211,7 +211,7 @@ export class WellPlate<T = any> {
   public getPositionCodeRange(
     bound1: number | string | IPosition,
     bound2: number | string | IPosition,
-    mode: RangeMode = RangeMode.byRows
+    mode: RangeMode = RangeMode.byRows,
   ): string[] {
     this._checkIndex(this.getIndex(bound1));
     this._checkIndex(this.getIndex(bound2));
@@ -224,7 +224,7 @@ export class WellPlate<T = any> {
       const size = endIndex - startIndex + 1;
       this._checkIndex(endIndex);
       return getRange(startIndex, size).map((index) =>
-        this.getPositionCode(index)
+        this.getPositionCode(index),
       );
     } else if (mode === RangeMode.byColumns) {
       let startPosition = this.getPosition(bound1);
@@ -275,7 +275,7 @@ export class WellPlate<T = any> {
    */
   public getPositionCodeZone(
     bound1: string | number | IPosition,
-    bound2: string | number | IPosition
+    bound2: string | number | IPosition,
   ) {
     const startPosition = this.getPosition(bound1);
     const endPosition = this.getPosition(bound2);
@@ -299,7 +299,7 @@ export class WellPlate<T = any> {
           this.getPositionCode({
             row: upperLeft.row + j,
             column: upperLeft.column + i,
-          })
+          }),
         );
       }
     }
@@ -339,22 +339,22 @@ export class WellPlate<T = any> {
       return this._getPositionFromIndex(wellCode);
     } else if (typeof wellCode === 'string') {
       if (this.positionFormat === PositionFormat.NumberNumber) {
-        const reg = /^(\d+).(\d+)$/;
+        const reg = /^(?<row>\d+).(?<column>\d+)$/;
         const m = reg.exec(wellCode);
-        const hasSeparator = wellCode.indexOf(this.separator) !== -1;
-        if (!hasSeparator || m === null) {
+        const hasSeparator = wellCode.includes(this.separator);
+        if (!hasSeparator || m === null || !m.groups) {
           throw this._formatError();
         }
         const position = {
-          row: +m[1] - 1,
-          column: +m[2] - 1,
+          row: +m.groups.row - 1,
+          column: +m.groups.column - 1,
         };
         this._checkPosition(position);
         return position;
       } else {
-        const reg = /^([A-Z])(\d+)$/;
+        const reg = /^(?<row>[A-Z])(?<column>\d+)$/;
         const m = reg.exec(wellCode);
-        if (m === null) {
+        if (m === null || !m.groups) {
           if (this.positionFormat !== PositionFormat.Sequential) {
             throw this._formatError();
           }
@@ -370,8 +370,8 @@ export class WellPlate<T = any> {
           throw this._formatError();
         }
         const position = {
-          row: m[1].charCodeAt(0) - 'A'.charCodeAt(0),
-          column: +m[2] - 1,
+          row: m.groups.row.charCodeAt(0) - 'A'.charCodeAt(0),
+          column: +m.groups.column - 1,
         };
         this._checkPosition(position);
         return position;
@@ -394,7 +394,7 @@ export class WellPlate<T = any> {
     return row * this.columns + column;
   }
 
-  get columnLabels(): string[] {
+  public get columnLabels(): string[] {
     const result = [];
     let label = 1;
     for (let i = 0; i < this.columns; i++) {
@@ -403,7 +403,7 @@ export class WellPlate<T = any> {
     return result;
   }
 
-  get rowLabels(): string[] {
+  public get rowLabels(): string[] {
     if (this.positionFormat !== PositionFormat.LetterNumber) {
       const result = [];
       let label = 1;
@@ -436,7 +436,7 @@ export class WellPlate<T = any> {
     switch (this.positionFormat) {
       case PositionFormat.LetterNumber: {
         return new Error(
-          'invalid well code format. Must be a letter followed by a number'
+          'invalid well code format. Must be a letter followed by a number',
         );
       }
       case PositionFormat.Sequential: {
@@ -444,8 +444,11 @@ export class WellPlate<T = any> {
       }
       case PositionFormat.NumberNumber: {
         return new Error(
-          `invalid well code format. Must be 2 numbers separated by a ${this.separator}`
+          `invalid well code format. Must be 2 numbers separated by a ${this.separator}`,
         );
+      }
+      default: {
+        throw new Error('Unreachable');
       }
     }
   }
