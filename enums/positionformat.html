@@ -1,0 +1,206 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>PositionFormat | well-plates</title>
+	<meta name="description" content="Documentation for well-plates">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">well-plates</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">well-plates</a>
+				</li>
+				<li>
+					<a href="positionformat.html">PositionFormat</a>
+				</li>
+			</ul>
+			<h1>Enumeration PositionFormat</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The format of a well position.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Enumeration members</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="positionformat.html#letternumber" class="tsd-kind-icon">Letter<wbr>Number</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="positionformat.html#numbernumber" class="tsd-kind-icon">Number<wbr>Number</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="positionformat.html#sequential" class="tsd-kind-icon">Sequential</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="letternumber" class="tsd-anchor"></a>
+					<h3>Letter<wbr>Number</h3>
+					<div class="tsd-signature tsd-kind-icon">Letter<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;LETTER_NUMBER&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/8d6766f/src/index.ts#L29">index.ts:29</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A letter + a number. When this format is used, the position will be represented
+							as a string with one letter + one number, representing the row and column position. For example B3 is for second row, 3rd column.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="numbernumber" class="tsd-anchor"></a>
+					<h3>Number<wbr>Number</h3>
+					<div class="tsd-signature tsd-kind-icon">Number<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;NUMBER_NUMBER&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/8d6766f/src/index.ts#L34">index.ts:34</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A number + a number. When this format is used, the position will be represented
+							as number for the row and a number for the column. For example 2-4 is for secord row, 4th column.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="sequential" class="tsd-anchor"></a>
+					<h3>Sequential</h3>
+					<div class="tsd-signature tsd-kind-icon">Sequential<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;SEQUENTIAL&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/8d6766f/src/index.ts#L24">index.ts:24</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Sequential. When this format is used, the position code will starts with 1 and will be incremented columns first.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="iterationorder.html" class="tsd-kind-icon">Iteration<wbr>Order</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-enum">
+						<a href="positionformat.html" class="tsd-kind-icon">Position<wbr>Format</a>
+						<ul>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="positionformat.html#letternumber" class="tsd-kind-icon">Letter<wbr>Number</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="positionformat.html#numbernumber" class="tsd-kind-icon">Number<wbr>Number</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="positionformat.html#sequential" class="tsd-kind-icon">Sequential</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-enum">
+						<a href="rangemode.html" class="tsd-kind-icon">Range<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/wellplate.html" class="tsd-kind-icon">Well<wbr>Plate</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/iposition.html" class="tsd-kind-icon">IPosition</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/iwellplateconfig.html" class="tsd-kind-icon">IWell<wbr>Plate<wbr>Config</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
