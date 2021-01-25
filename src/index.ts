@@ -308,12 +308,15 @@ export class WellPlate<T = any> {
 
   public getIndex(position: IPosition | string | number): number {
     if (typeof position === 'number') {
+      this._checkIndex(position);
       return position;
     }
     if (typeof position === 'string') {
       return this._getIndexFromCode(position);
     }
-    return position.row * this.columns + position.column;
+    const index = position.row * this.columns + position.column;
+    this._checkIndex(index);
+    return index;
   }
 
   public getData(position: IPosition | string | number) {
