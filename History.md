@@ -1,3 +1,10 @@
+### [4.1.1](https://github.com/cheminfo/well-plates/compare/v4.1.0...v4.1.1) (2021-01-25)
+
+
+### Bug Fixes
+
+* consistently check index in getIndex method ([b5567b4](https://github.com/cheminfo/well-plates/commit/b5567b48eae29610fc4238cec6a54b5a3a122bf4))
+
 # [4.1.0](https://github.com/cheminfo/well-plates/compare/v4.0.0...v4.1.0) (2019-11-03)
 
 
