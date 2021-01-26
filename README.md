@@ -1,11 +1,11 @@
 # well-plates
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
+[![CI status][github-ci-image]][github-ci-action-url]
 [![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
-Utility to manipulate positions on well plates.
+Utility library to manipulate positions on well plates.
 
 ## Installation
 
@@ -19,8 +19,8 @@ Utility to manipulate positions on well plates.
 
 [npm-image]: https://img.shields.io/npm/v/well-plates.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/well-plates
-[travis-image]: https://img.shields.io/travis/cheminfo/well-plates/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/cheminfo/well-plates
+[github-ci-action-url]: https://github.com/cheminfo/well-plates/actions?query=workflow%3A%22Node.js+CI%22
+[github-ci-image]: https://github.com/cheminfo/well-plates/workflows/Node.js%20CI/badge.svg
 [codecov-image]: https://img.shields.io/codecov/c/github/cheminfo/well-plates.svg?style=flat-square
 [codecov-url]: https://codecov.io/gh/cheminfo/well-plates
 [download-image]: https://img.shields.io/npm/dm/well-plates.svg?style=flat-square
