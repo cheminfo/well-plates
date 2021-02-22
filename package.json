@@ -17,7 +17,6 @@
     "test": "run-s test-only eslint test-tsc",
     "test-only": "jest",
     "test-coverage": "jest --coverage",
-    "test-travis": "run-s eslint test-coverage",
     "test-tsc": "tsc --noEmit",
     "tsc": "run-s clean tsc-es5 tsc-es6",
     "tsc-es5": "tsc",
