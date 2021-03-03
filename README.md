@@ -5,7 +5,7 @@
 [![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
-Utility to manipulate positions on well plates.
+Utility library to manipulate positions on well plates.
 
 ## Installation
 
