@@ -131,40 +131,29 @@ export class WellPlate<T = any> {
 
   public [Symbol.iterator]() {
     let i = -1;
-    let realIndex = i;
     return {
       next: () => {
         i++;
-        if (this.iterationOrder === IterationOrder.ByRow) {
-          realIndex = this.getTransposedIndex(i);
-        } else {
-          realIndex = i;
-        }
         const done = i === this.size;
         return {
           done,
           value: done
             ? null
             : {
-                index: realIndex,
-                position: this._getPositionFromIndex(realIndex),
-                code: this.getPositionCode(realIndex),
-                data: this.getData(realIndex),
+                index: i,
+                position: this._getPositionFromIndex(i, this.iterationOrder),
+                code: this.getPositionCode(i),
+                data: this.getData(i),
               },
         };
       },
     };
   }
 
-  /**
-   * Get the code for a specific position on the well.
-   *
-   * Some wells will return a code compose of a letter and a number
-   * Other will will simply return the position
-   * @param arg1 - The index position of the well, starting with 0, or the position of the well, see [[Position]]
-   * @returns The code of the well position. The format depends on the PositionFormat, see [[wellCodeFormat]]
-   */
-  public getPositionCode(arg1: number | IPosition): string {
+  private _getPositionCode(
+    arg1: number | IPosition,
+    iterationOrder: IterationOrder,
+  ): string {
     if (typeof arg1 === 'number') {
       this._checkIndex(arg1);
       switch (this.positionFormat) {
@@ -172,11 +161,11 @@ export class WellPlate<T = any> {
           return String(arg1 + 1);
         }
         case PositionFormat.LetterNumber: {
-          const position = this._getPositionFromIndex(arg1);
+          const position = this._getPositionFromIndex(arg1, iterationOrder);
           return this._letterNumberCodeFromPosition(position);
         }
         case PositionFormat.NumberNumber: {
-          const position = this._getPositionFromIndex(arg1);
+          const position = this._getPositionFromIndex(arg1, iterationOrder);
           return this._numberNumberCodeFromPosition(position);
         }
         default: {
@@ -203,6 +192,18 @@ export class WellPlate<T = any> {
   }
 
   /**
+   * Get the code for a specific position on the well.
+   *
+   * Some wells will return a code compose of a letter and a number
+   * Other will will simply return the position
+   * @param arg1 - The index position of the well, starting with 0, or the position of the well, see [[Position]]
+   * @returns The code of the well position. The format depends on the PositionFormat, see [[wellCodeFormat]]
+   */
+  public getPositionCode(arg1: number | IPosition): string {
+    return this._getPositionCode(arg1, this.iterationOrder);
+  }
+
+  /**
    * Get a range of well position codes. Inverting the start and end positions
    * @param bound1 One of the 2 bounding position to include in the range
    * @param bound2 The other of the 2 bounding position to include in the range
@@ -215,57 +216,25 @@ export class WellPlate<T = any> {
   ): string[] {
     this._checkIndex(this.getIndex(bound1));
     this._checkIndex(this.getIndex(bound2));
-    if (mode === RangeMode.byRows) {
-      let startIndex = this.getIndex(bound1);
-      let endIndex = this.getIndex(bound2);
-      if (startIndex > endIndex) {
-        [startIndex, endIndex] = [endIndex, startIndex];
-      }
-      const size = endIndex - startIndex + 1;
-      this._checkIndex(endIndex);
-      return getRange(startIndex, size).map((index) =>
-        this.getPositionCode(index),
-      );
-    } else if (mode === RangeMode.byColumns) {
-      let startPosition = this.getPosition(bound1);
-      let endPosition = this.getPosition(bound2);
-      const transposed = new WellPlate({
-        rows: this.columns,
-        columns: this.rows,
-        positionFormat: this.positionFormat,
-      });
+    const iterationOrder =
+      mode === RangeMode.byRows
+        ? IterationOrder.ByColumn
+        : IterationOrder.ByRow;
+    const b1 =
+      typeof bound1 === 'number' ? this.getPositionCode(bound1) : bound1;
+    const b2 =
+      typeof bound2 === 'number' ? this.getPositionCode(bound2) : bound2;
 
-      let size =
-        transposed.getIndex({
-          row: endPosition.column,
-          column: endPosition.row,
-        }) -
-        transposed.getIndex({
-          row: startPosition.column,
-          column: startPosition.row,
-        });
-
-      if (size < 0) {
-        size = -size;
-        [startPosition, endPosition] = [endPosition, startPosition];
-      }
-      size = size + 1;
-
-      const range: IPosition[] = [];
-
-      for (let i = 0; i < size; i++) {
-        const newPosition: IPosition = {
-          row: (startPosition.row + i) % this.rows,
-          column:
-            startPosition.column +
-            Math.floor((i + startPosition.row) / this.rows),
-        };
-        range.push(newPosition);
-      }
-      return range.map(this.getPositionCode.bind(this));
-    } else {
-      throw new Error('Unexperted range mode');
+    let startIndex = this._getIndex(b1, iterationOrder);
+    let endIndex = this._getIndex(b2, iterationOrder);
+    if (startIndex > endIndex) {
+      [startIndex, endIndex] = [endIndex, startIndex];
     }
+    const size = endIndex - startIndex + 1;
+    this._checkIndex(endIndex);
+    return getRange(startIndex, size).map((index) =>
+      this._getPositionCode(index, iterationOrder),
+    );
   }
 
   /**
@@ -306,17 +275,29 @@ export class WellPlate<T = any> {
     return range;
   }
 
-  public getIndex(position: IPosition | string | number): number {
+  private _getIndex(
+    position: IPosition | string | number,
+    iterationOrder: IterationOrder,
+  ): number {
     if (typeof position === 'number') {
       this._checkIndex(position);
       return position;
     }
     if (typeof position === 'string') {
-      return this._getIndexFromCode(position);
+      return this._getIndexFromCode(position, iterationOrder);
     }
-    const index = position.row * this.columns + position.column;
+    let index: number;
+    if (iterationOrder === IterationOrder.ByColumn) {
+      index = position.row * this.columns + position.column;
+    } else {
+      index = position.column * this.rows + position.row;
+    }
     this._checkIndex(index);
     return index;
+  }
+
+  public getIndex(position: IPosition | string | number): number {
+    return this._getIndex(position, this.iterationOrder);
   }
 
   public getData(position: IPosition | string | number) {
@@ -336,7 +317,7 @@ export class WellPlate<T = any> {
   public getPosition(wellCode: string | number | IPosition): IPosition {
     if (typeof wellCode === 'number') {
       this._checkIndex(wellCode);
-      return this._getPositionFromIndex(wellCode);
+      return this._getPositionFromIndex(wellCode, this.iterationOrder);
     } else if (typeof wellCode === 'string') {
       if (this.positionFormat === PositionFormat.NumberNumber) {
         const reg = /^(?<row>\d+).(?<column>\d+)$/;
@@ -363,7 +344,7 @@ export class WellPlate<T = any> {
             throw this._formatError();
           }
           this._checkIndex(wellIndex);
-          return this._getPositionFromIndex(wellIndex);
+          return this._getPositionFromIndex(wellIndex, this.iterationOrder);
         }
 
         if (this.positionFormat !== PositionFormat.LetterNumber) {
@@ -385,13 +366,14 @@ export class WellPlate<T = any> {
    * This library works with indices that increment by jumping from one column to the next
    * If you own index works by jumping from one row to the next, you can use this method to transform your index.
    * This is especially useful to iterate on portions of the plates by row instead of by column
-   * @param byRowIndex The index by row
+   * @param index The index by row
    * @returns The index by column, such as used by the library
    */
-  public getTransposedIndex(byRowIndex: number) {
-    const row = byRowIndex % this.rows;
-    const column = Math.floor(byRowIndex / this.rows);
-    return row * this.columns + column;
+  public getTransposedIndex(index: number) {
+    const position = this._getPositionFromIndex(index, this.iterationOrder);
+    // Invert row and column
+    const { row: column, column: row } = position;
+    return this.getIndex({ row, column });
   }
 
   public get columnLabels(): string[] {
@@ -421,15 +403,28 @@ export class WellPlate<T = any> {
     }
   }
 
-  private _getPositionFromIndex(index: number): IPosition {
-    return {
-      row: Math.floor(index / this.columns),
-      column: index % this.columns,
-    };
+  private _getPositionFromIndex(
+    index: number,
+    iterationOrder: IterationOrder,
+  ): IPosition {
+    if (iterationOrder === IterationOrder.ByColumn) {
+      return {
+        row: Math.floor(index / this.columns),
+        column: index % this.columns,
+      };
+    } else {
+      return {
+        row: index % this.rows,
+        column: Math.floor(index / this.rows),
+      };
+    }
   }
 
-  private _getIndexFromCode(wellCode: string): number {
-    return this.getIndex(this.getPosition(wellCode));
+  private _getIndexFromCode(
+    wellCode: string,
+    iterationOrder: IterationOrder,
+  ): number {
+    return this._getIndex(this.getPosition(wellCode), iterationOrder);
   }
 
   private _formatError() {
