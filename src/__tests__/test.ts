@@ -24,6 +24,26 @@ describe('WellPlate', () => {
     );
   });
 
+  it('getPositionCode by rows', () => {
+    const wellPlate = new WellPlate({
+      rows: 4,
+      columns: 6,
+      iterationOrder: IterationOrder.ByRow,
+    });
+    expect(wellPlate.getPositionCode(0)).toStrictEqual('A1');
+    expect(wellPlate.getPositionCode(3)).toStrictEqual('D1');
+    expect(wellPlate.getPositionCode(9)).toStrictEqual('B3');
+    expect(wellPlate.getPositionCode({ row: 3, column: 3 })).toStrictEqual(
+      'D4',
+    );
+    expect(() => wellPlate.getPositionCode(24)).toThrow(
+      /well index is out of range/,
+    );
+    expect(() => wellPlate.getPositionCode({ row: 4, column: 0 })).toThrow(
+      /well position is out of range/,
+    );
+  });
+
   it('getPositionCode sequential format', () => {
     const wellPlate = getWellPlate('6x8', PositionFormat.Sequential);
     expect(wellPlate.getPositionCode(18)).toStrictEqual('19');
@@ -54,6 +74,26 @@ describe('WellPlate', () => {
     expect(wellPlate.getPositionCodeRange('C5', 'D3')).toStrictEqual(expected);
     expect(wellPlate.getPositionCodeRange('D3', 'C5')).toStrictEqual(expected);
     expect(wellPlate.getPositionCodeRange('C5', 20)).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionCodeRange(
+        { row: 3, column: 2 },
+        { row: 2, column: 4 },
+      ),
+    ).toStrictEqual(expected);
+  });
+
+  it('getCodeRange by rows, iteration order by rows', () => {
+    const wellPlate = getWellPlate(
+      '4x6',
+      PositionFormat.LetterNumber,
+      IterationOrder.ByRow,
+    );
+    const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
+    expect(wellPlate.getPositionCodeRange(11, 18)).toStrictEqual(expected);
+    expect(wellPlate.getPositionCodeRange(18, 11)).toStrictEqual(expected);
+    expect(wellPlate.getPositionCodeRange('C5', 'D3')).toStrictEqual(expected);
+    expect(wellPlate.getPositionCodeRange('D3', 'C5')).toStrictEqual(expected);
+    expect(wellPlate.getPositionCodeRange('C5', 11)).toStrictEqual(expected);
     expect(
       wellPlate.getPositionCodeRange(
         { row: 3, column: 2 },
@@ -311,25 +351,25 @@ describe('WellPlate', () => {
         data: undefined,
       },
       {
-        index: 3,
+        index: 1,
         position: { row: 1, column: 0 },
         code: 'B1',
         data: undefined,
       },
       {
-        index: 1,
+        index: 2,
         position: { row: 0, column: 1 },
         code: 'A2',
         data: undefined,
       },
       {
-        index: 4,
+        index: 3,
         position: { row: 1, column: 1 },
         code: 'B2',
         data: undefined,
       },
       {
-        index: 2,
+        index: 4,
         position: { row: 0, column: 2 },
         code: 'A3',
         data: undefined,
