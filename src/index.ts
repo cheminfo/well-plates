@@ -287,12 +287,12 @@ export class WellPlate<T = any> {
       return this._getIndexFromCode(position, iterationOrder);
     }
     let index: number;
+    this._checkPosition(position);
     if (iterationOrder === IterationOrder.ByColumn) {
       index = position.row * this.columns + position.column;
     } else {
       index = position.column * this.rows + position.row;
     }
-    this._checkIndex(index);
     return index;
   }
 
