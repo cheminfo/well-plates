@@ -193,6 +193,24 @@ describe('WellPlate', () => {
     expect(() => wellPlate.getIndex(24)).toThrow(/out of range/);
   });
 
+  it('getIndex, iteration order by row', () => {
+    const wellPlate = getWellPlate(
+      '4x6',
+      PositionFormat.LetterNumber,
+      IterationOrder.ByRow,
+    );
+    expect(wellPlate.getIndex('A6')).toStrictEqual(20);
+    expect(wellPlate.getIndex(23)).toStrictEqual(23);
+    expect(() => wellPlate.getIndex('F1')).toThrow(/out of range/);
+    expect(() =>
+      wellPlate.getIndex({
+        row: 4,
+        column: 0,
+      }),
+    ).toThrow(/out of range/);
+    expect(() => wellPlate.getIndex(24)).toThrow(/out of range/);
+  });
+
   it('get index with number-number format', () => {
     const wellPlate = getWellPlate('4x6', PositionFormat.NumberNumber);
     expect(wellPlate.getIndex('2.4')).toStrictEqual(9);
