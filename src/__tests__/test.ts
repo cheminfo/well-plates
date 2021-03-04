@@ -5,6 +5,7 @@ describe('WellPlate', () => {
     const wellPlate = new WellPlate({ rows: 2, columns: 8 });
     expect(wellPlate.rows).toStrictEqual(2);
     expect(wellPlate.columns).toStrictEqual(8);
+    expect(wellPlate.size).toStrictEqual(16);
   });
 
   it('getPositionCode', () => {

@@ -113,7 +113,7 @@ export class WellPlate<T = any> {
   /**
    * The number of wells on the well plate.
    */
-  private size: number;
+  public readonly size: number;
 
   public constructor(config: IWellPlateConfig) {
     this.rows = config.rows;
