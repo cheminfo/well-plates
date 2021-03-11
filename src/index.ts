@@ -1,5 +1,7 @@
 import { getRange } from './utils';
 
+type PositionInput = string | number | IPosition;
+
 /**
  * The position on a 2 dimensional well plate.
  */
@@ -48,6 +50,8 @@ export enum IterationOrder {
    */
   ByRow = 'BY_ROW',
 }
+
+export type PositionEncoding = 'index' | 'row_column' | 'formatted';
 
 export enum RangeMode {
   /**
@@ -142,7 +146,7 @@ export class WellPlate<T = any> {
             : {
                 index: i,
                 position: this._getPositionFromIndex(i, this.iterationOrder),
-                code: this.getPositionCode(i),
+                code: this._getFormattedPosition(i),
                 data: this.getData(i),
               },
         };
@@ -151,7 +155,7 @@ export class WellPlate<T = any> {
   }
 
   private _getPositionCode(
-    arg1: number | IPosition,
+    arg1: PositionInput,
     iterationOrder: IterationOrder,
   ): string {
     if (typeof arg1 === 'number') {
@@ -172,6 +176,10 @@ export class WellPlate<T = any> {
           throw new Error('Unreachable');
         }
       }
+    } else if (typeof arg1 === 'string') {
+      // This will check if the input is valid
+      this._getPosition(arg1);
+      return arg1;
     } else {
       this._checkPosition(arg1);
       switch (this.positionFormat) {
@@ -199,7 +207,7 @@ export class WellPlate<T = any> {
    * @param arg1 - The index position of the well, starting with 0, or the position of the well, see [[Position]]
    * @returns The code of the well position. The format depends on the PositionFormat, see [[wellCodeFormat]]
    */
-  public getPositionCode(arg1: number | IPosition): string {
+  private _getFormattedPosition(arg1: PositionInput): string {
     return this._getPositionCode(arg1, this.iterationOrder);
   }
 
@@ -210,23 +218,23 @@ export class WellPlate<T = any> {
    * @param mode If the range sholud be along rows or columns
    */
   public getPositionCodeRange(
-    bound1: number | string | IPosition,
-    bound2: number | string | IPosition,
+    bound1: PositionInput,
+    bound2: PositionInput,
     mode: RangeMode = RangeMode.byRows,
   ): string[] {
-    this._checkIndex(this.getIndex(bound1));
-    this._checkIndex(this.getIndex(bound2));
+    this._checkIndex(this._getIndex(bound1));
+    this._checkIndex(this._getIndex(bound2));
     const iterationOrder =
       mode === RangeMode.byRows
         ? IterationOrder.ByColumn
         : IterationOrder.ByRow;
     const b1 =
-      typeof bound1 === 'number' ? this.getPositionCode(bound1) : bound1;
+      typeof bound1 === 'number' ? this._getFormattedPosition(bound1) : bound1;
     const b2 =
-      typeof bound2 === 'number' ? this.getPositionCode(bound2) : bound2;
+      typeof bound2 === 'number' ? this._getFormattedPosition(bound2) : bound2;
 
-    let startIndex = this._getIndex(b1, iterationOrder);
-    let endIndex = this._getIndex(b2, iterationOrder);
+    let startIndex = this._getOrderedIndex(b1, iterationOrder);
+    let endIndex = this._getOrderedIndex(b2, iterationOrder);
     if (startIndex > endIndex) {
       [startIndex, endIndex] = [endIndex, startIndex];
     }
@@ -242,12 +250,9 @@ export class WellPlate<T = any> {
    * @param bound1 One of the 2 bounding position to include in the zone
    * @param bound2 The other of the 2 bounding position to include in the zone
    */
-  public getPositionCodeZone(
-    bound1: string | number | IPosition,
-    bound2: string | number | IPosition,
-  ) {
-    const startPosition = this.getPosition(bound1);
-    const endPosition = this.getPosition(bound2);
+  public getPositionCodeZone(bound1: PositionInput, bound2: PositionInput) {
+    const startPosition = this._getPosition(bound1);
+    const endPosition = this._getPosition(bound2);
     this._checkPosition(startPosition);
     this._checkPosition(endPosition);
     const upperLeft = {
@@ -265,7 +270,7 @@ export class WellPlate<T = any> {
     for (let j = 0; j < height; j++) {
       for (let i = 0; i < width; i++) {
         range.push(
-          this.getPositionCode({
+          this._getFormattedPosition({
             row: upperLeft.row + j,
             column: upperLeft.column + i,
           }),
@@ -275,8 +280,8 @@ export class WellPlate<T = any> {
     return range;
   }
 
-  private _getIndex(
-    position: IPosition | string | number,
+  private _getOrderedIndex(
+    position: PositionInput,
     iterationOrder: IterationOrder,
   ): number {
     if (typeof position === 'number') {
@@ -296,25 +301,48 @@ export class WellPlate<T = any> {
     return index;
   }
 
-  public getIndex(position: IPosition | string | number): number {
-    return this._getIndex(position, this.iterationOrder);
+  private _getIndex(position: PositionInput): number {
+    return this._getOrderedIndex(position, this.iterationOrder);
   }
 
-  public getData(position: IPosition | string | number) {
-    const index = this.getIndex(position);
+  public getData(position: PositionInput) {
+    const index = this._getIndex(position);
     return this.data[index];
   }
 
-  public setData(position: IPosition | string | number, item: T) {
-    const index = this.getIndex(position);
+  public setData(position: PositionInput, item: T) {
+    const index = this._getIndex(position);
     this.data[index] = item;
+  }
+
+  public getPosition(input: PositionInput, encoding: 'row_column'): IPosition;
+  public getPosition(input: PositionInput, encoding: 'index'): number;
+  public getPosition(input: PositionInput, encoding: 'formatted'): string;
+  public getPosition(
+    input: PositionInput,
+    encoding: PositionEncoding,
+  ): PositionInput {
+    switch (encoding) {
+      case 'index': {
+        return this._getIndex(input);
+      }
+      case 'row_column': {
+        return this._getPosition(input);
+      }
+      case 'formatted': {
+        return this._getFormattedPosition(input);
+      }
+      default: {
+        throw new Error('unreachable');
+      }
+    }
   }
 
   /**
    * Get the well position given a formatted well position code.
    * @param wellCode The position code.
    */
-  public getPosition(wellCode: string | number | IPosition): IPosition {
+  private _getPosition(wellCode: PositionInput): IPosition {
     if (typeof wellCode === 'number') {
       this._checkIndex(wellCode);
       return this._getPositionFromIndex(wellCode, this.iterationOrder);
@@ -373,7 +401,7 @@ export class WellPlate<T = any> {
     const position = this._getPositionFromIndex(index, this.iterationOrder);
     // Invert row and column
     const { row: column, column: row } = position;
-    return this.getIndex({ row, column });
+    return this._getIndex({ row, column });
   }
 
   public get columnLabels(): string[] {
@@ -424,7 +452,7 @@ export class WellPlate<T = any> {
     wellCode: string,
     iterationOrder: IterationOrder,
   ): number {
-    return this._getIndex(this.getPosition(wellCode), iterationOrder);
+    return this._getOrderedIndex(this._getPosition(wellCode), iterationOrder);
   }
 
   private _formatError() {
@@ -450,7 +478,7 @@ export class WellPlate<T = any> {
 
   private _checkIndex(index: number) {
     if (index < 0 || index >= this.size) {
-      throw new RangeError('well index is out of range');
+      throw new RangeError('well position is out of range');
     }
   }
 
