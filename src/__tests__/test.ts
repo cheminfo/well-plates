@@ -1,71 +1,248 @@
 import { IterationOrder, PositionFormat, RangeMode, WellPlate } from '..';
 
-describe('WellPlate', () => {
-  it('size', () => {
+describe('Computed / read-only properties', () => {
+  it('read-only size property', () => {
     const wellPlate = new WellPlate({ rows: 2, columns: 8 });
     expect(wellPlate.rows).toStrictEqual(2);
     expect(wellPlate.columns).toStrictEqual(8);
     expect(wellPlate.size).toStrictEqual(16);
   });
 
-  it('getPositionCode', () => {
-    const wellPlate = new WellPlate({ rows: 4, columns: 6 });
-    expect(wellPlate.getPositionCode(0)).toStrictEqual('A1');
-    expect(wellPlate.getPositionCode(3)).toStrictEqual('A4');
-    expect(wellPlate.getPositionCode(8)).toStrictEqual('B3');
-    expect(wellPlate.getPositionCode({ row: 3, column: 3 })).toStrictEqual(
-      'D4',
-    );
-    expect(() => wellPlate.getPositionCode(24)).toThrow(
-      /well index is out of range/,
-    );
-    expect(() => wellPlate.getPositionCode({ row: 4, column: 0 })).toThrow(
-      /well position is out of range/,
-    );
+  it('computed columnLabels property', () => {
+    const wellPlate = getWellPlate('8x12');
+    const expected = [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '11',
+      '12',
+    ];
+    expect(wellPlate.columnLabels).toStrictEqual(expected);
+
+    const wellPlateSeq = getWellPlate('3x4', PositionFormat.Sequential);
+    expect(wellPlateSeq.columnLabels).toStrictEqual(['1', '2', '3', '4']);
   });
 
-  it('getPositionCode by rows', () => {
+  it('computed rowLabels property', () => {
+    const wellPlate = getWellPlate('8x12');
+    const expected = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    expect(wellPlate.rowLabels).toStrictEqual(expected);
+
+    const wellPlateSeq = getWellPlate('3x4', PositionFormat.Sequential);
+    expect(wellPlateSeq.rowLabels).toStrictEqual(['1', '2', '3']);
+  });
+});
+
+describe('getPosition with all different output encoding and format', () => {
+  it('any input - formatted encoding - LetterNumber format', () => {
+    const wellPlate = new WellPlate({ rows: 4, columns: 6 });
+    expect(wellPlate.getPosition(0, 'formatted')).toStrictEqual('A1');
+    expect(wellPlate.getPosition(3, 'formatted')).toStrictEqual('A4');
+    expect(wellPlate.getPosition(8, 'formatted')).toStrictEqual('B3');
+    expect(wellPlate.getPosition('B3', 'formatted')).toStrictEqual('B3');
+    expect(() => wellPlate.getPosition('U2', 'formatted')).toThrow(
+      /well position is out of range/,
+    );
+    expect(
+      wellPlate.getPosition({ row: 3, column: 3 }, 'formatted'),
+    ).toStrictEqual('D4');
+    expect(() => wellPlate.getPosition(24, 'formatted')).toThrow(
+      /well position is out of range/,
+    );
+    expect(() =>
+      wellPlate.getPosition({ row: 4, column: 0 }, 'formatted'),
+    ).toThrow(/well position is out of range/);
+  });
+
+  it('any input - formatted encoding - sequential format', () => {
+    const wellPlate = getWellPlate('6x8', PositionFormat.Sequential);
+    expect(wellPlate.getPosition(18, 'formatted')).toStrictEqual('19');
+    expect(wellPlate.getPosition('11', 'formatted')).toStrictEqual('11');
+    expect(
+      wellPlate.getPosition({ row: 2, column: 5 }, 'formatted'),
+    ).toStrictEqual('22');
+    expect(() => wellPlate.getPosition('49', 'formatted')).toThrow(
+      /well position is out of range/,
+    );
+    expect(() => wellPlate.getPosition(48, 'formatted')).toThrow(
+      /well position is out of range/,
+    );
+    expect(() =>
+      wellPlate.getPosition({ row: 7, column: 9 }, 'formatted'),
+    ).toThrow(/well position is out of range/);
+  });
+
+  it('any input - formatted encoding - number-number format', () => {
+    const wellPlate = getWellPlate('9x9', PositionFormat.NumberNumber);
+    expect(wellPlate.getPosition(55, 'formatted')).toStrictEqual('7.2');
+    expect(
+      wellPlate.getPosition({ row: 2, column: 5 }, 'formatted'),
+    ).toStrictEqual('3.6');
+    expect(() =>
+      wellPlate.getPosition({ row: 7, column: 9 }, 'formatted'),
+    ).toThrow(/well position is out of range/);
+  });
+
+  it('any input, formatted encoding - letter-number format - iterationOrder BY_ROW', () => {
     const wellPlate = new WellPlate({
       rows: 4,
       columns: 6,
       iterationOrder: IterationOrder.ByRow,
     });
-    expect(wellPlate.getPositionCode(0)).toStrictEqual('A1');
-    expect(wellPlate.getPositionCode(3)).toStrictEqual('D1');
-    expect(wellPlate.getPositionCode(9)).toStrictEqual('B3');
-    expect(wellPlate.getPositionCode({ row: 3, column: 3 })).toStrictEqual(
-      'D4',
-    );
-    expect(() => wellPlate.getPositionCode(24)).toThrow(
-      /well index is out of range/,
-    );
-    expect(() => wellPlate.getPositionCode({ row: 4, column: 0 })).toThrow(
+    expect(wellPlate.getPosition(0, 'formatted')).toStrictEqual('A1');
+    expect(wellPlate.getPosition(3, 'formatted')).toStrictEqual('D1');
+    expect(wellPlate.getPosition(9, 'formatted')).toStrictEqual('B3');
+    expect(
+      wellPlate.getPosition({ row: 3, column: 3 }, 'formatted'),
+    ).toStrictEqual('D4');
+    expect(() => wellPlate.getPosition(24, 'formatted')).toThrow(
       /well position is out of range/,
+    );
+    expect(() =>
+      wellPlate.getPosition({ row: 4, column: 0 }, 'formatted'),
+    ).toThrow(/well position is out of range/);
+  });
+  it('any input - row_column encoding', () => {
+    const wellPlate = getWellPlate('4x6');
+    expect(wellPlate.getPosition('A6', 'row_column')).toStrictEqual({
+      row: 0,
+      column: 5,
+    });
+
+    expect(wellPlate.getPosition('C3', 'row_column')).toStrictEqual({
+      row: 2,
+      column: 2,
+    });
+
+    expect(() => wellPlate.getPosition('E1', 'row_column')).toThrow(
+      /out of range/,
+    );
+    expect(() => wellPlate.getPosition('B7', 'row_column')).toThrow(
+      /out of range/,
+    );
+    expect(() => wellPlate.getPosition('123', 'row_column')).toThrow(
+      /invalid well code format. Must be a letter followed by a number/,
+    );
+    expect(() => wellPlate.getPosition('a1', 'row_column')).toThrow(
+      /invalid well code format. Must be a letter followed by a number/,
     );
   });
 
-  it('getPositionCode sequential format', () => {
+  it('any input - index encoding', () => {
+    const wellPlate = getWellPlate('4x6');
+    expect(wellPlate.getPosition('A6', 'index')).toStrictEqual(5);
+    expect(wellPlate.getPosition(23, 'index')).toStrictEqual(23);
+    expect(() => wellPlate.getPosition('F1', 'index')).toThrow(/out of range/);
+    expect(() =>
+      wellPlate.getPosition(
+        {
+          row: 4,
+          column: 0,
+        },
+        'index',
+      ),
+    ).toThrow(/out of range/);
+    expect(() => wellPlate.getPosition(24, 'index')).toThrow(/out of range/);
+  });
+
+  it('getIndex, iteration order by row', () => {
+    const wellPlate = getWellPlate(
+      '4x6',
+      PositionFormat.LetterNumber,
+      IterationOrder.ByRow,
+    );
+    expect(wellPlate.getPosition('A6', 'index')).toStrictEqual(20);
+    expect(wellPlate.getPosition(23, 'index')).toStrictEqual(23);
+    expect(() => wellPlate.getPosition('F1', 'index')).toThrow(/out of range/);
+    expect(() =>
+      wellPlate.getPosition(
+        {
+          row: 4,
+          column: 0,
+        },
+        'index',
+      ),
+    ).toThrow(/out of range/);
+    expect(() => wellPlate.getPosition(24, 'index')).toThrow(/out of range/);
+  });
+
+  it('get index with number-number format', () => {
+    const wellPlate = getWellPlate('4x6', PositionFormat.NumberNumber);
+    expect(wellPlate.getPosition('2.4', 'index')).toStrictEqual(9);
+  });
+
+  it('sequential and letterNumber formats', () => {
+    const wellPlateSeq = getWellPlate('9x9', PositionFormat.Sequential);
+    expect(wellPlateSeq.positionFormat).toStrictEqual(
+      PositionFormat.Sequential,
+    );
+    // Check this because format can come from a database
+    expect(wellPlateSeq.positionFormat).toStrictEqual('SEQUENTIAL');
+
+    const wellPlate = getWellPlate('9x9');
+    expect(wellPlate.positionFormat).toStrictEqual(PositionFormat.LetterNumber);
+    // Check this because format can come from a database
+    expect(wellPlate.positionFormat).toStrictEqual('LETTER_NUMBER');
+  });
+
+  it('getPosition Sequential format', () => {
     const wellPlate = getWellPlate('6x8', PositionFormat.Sequential);
-    expect(wellPlate.getPositionCode(18)).toStrictEqual('19');
-    expect(wellPlate.getPositionCode({ row: 2, column: 5 })).toStrictEqual(
-      '22',
+    expect(wellPlate.getPosition('9', 'row_column')).toStrictEqual({
+      row: 1,
+      column: 0,
+    });
+
+    expect(wellPlate.getPosition('45', 'row_column')).toStrictEqual({
+      row: 5,
+      column: 4,
+    });
+
+    expect(() => wellPlate.getPosition('82', 'row_column')).toThrow(
+      /out of range/,
     );
-    expect(() => wellPlate.getPositionCode({ row: 7, column: 9 })).toThrow(
-      /well position is out of range/,
+    expect(() => wellPlate.getPosition('A1', 'row_column')).toThrow(
+      /invalid well code format. Must be a number/,
+    );
+    expect(() => wellPlate.getPosition('inv', 'row_column')).toThrow(
+      /invalid well code format. Must be a number/,
     );
   });
 
-  it('getPositionCode number-number format', () => {
+  it('getPosition NumberNumber format', () => {
     const wellPlate = getWellPlate('9x9', PositionFormat.NumberNumber);
-    expect(wellPlate.getPositionCode(55)).toStrictEqual('7.2');
-    expect(wellPlate.getPositionCode({ row: 2, column: 5 })).toStrictEqual(
-      '3.6',
+    expect(wellPlate.getPosition('1.9', 'row_column')).toStrictEqual({
+      row: 0,
+      column: 8,
+    });
+
+    expect(wellPlate.getPosition('7.5', 'row_column')).toStrictEqual({
+      row: 6,
+      column: 4,
+    });
+
+    expect(() => wellPlate.getPosition('10.1', 'row_column')).toThrow(
+      /out of range/,
     );
-    expect(() => wellPlate.getPositionCode({ row: 7, column: 9 })).toThrow(
-      /well position is out of range/,
+    expect(() => wellPlate.getPosition('1.0', 'row_column')).toThrow(
+      /out of range/,
+    );
+    expect(() => wellPlate.getPosition('0.1', 'row_column')).toThrow(
+      /out of range/,
+    );
+    expect(() => wellPlate.getPosition('A1', 'row_column')).toThrow(
+      'invalid well code format. Must be 2 numbers separated by a .',
     );
   });
+});
 
+describe('get position ranges and subsets', () => {
   it('getCodeRange by rows', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
@@ -156,152 +333,9 @@ describe('WellPlate', () => {
       'C3',
     ]);
   });
+});
 
-  it('getPosition', () => {
-    const wellPlate = getWellPlate('4x6');
-    expect(wellPlate.getPosition('A6')).toStrictEqual({
-      row: 0,
-      column: 5,
-    });
-
-    expect(wellPlate.getPosition('C3')).toStrictEqual({
-      row: 2,
-      column: 2,
-    });
-
-    expect(() => wellPlate.getPosition('E1')).toThrow(/out of range/);
-    expect(() => wellPlate.getPosition('B7')).toThrow(/out of range/);
-    expect(() => wellPlate.getPosition('123')).toThrow(
-      /invalid well code format. Must be a letter followed by a number/,
-    );
-    expect(() => wellPlate.getPosition('a1')).toThrow(
-      /invalid well code format. Must be a letter followed by a number/,
-    );
-  });
-
-  it('getIndex', () => {
-    const wellPlate = getWellPlate('4x6');
-    expect(wellPlate.getIndex('A6')).toStrictEqual(5);
-    expect(wellPlate.getIndex(23)).toStrictEqual(23);
-    expect(() => wellPlate.getIndex('F1')).toThrow(/out of range/);
-    expect(() =>
-      wellPlate.getIndex({
-        row: 4,
-        column: 0,
-      }),
-    ).toThrow(/out of range/);
-    expect(() => wellPlate.getIndex(24)).toThrow(/out of range/);
-  });
-
-  it('getIndex, iteration order by row', () => {
-    const wellPlate = getWellPlate(
-      '4x6',
-      PositionFormat.LetterNumber,
-      IterationOrder.ByRow,
-    );
-    expect(wellPlate.getIndex('A6')).toStrictEqual(20);
-    expect(wellPlate.getIndex(23)).toStrictEqual(23);
-    expect(() => wellPlate.getIndex('F1')).toThrow(/out of range/);
-    expect(() =>
-      wellPlate.getIndex({
-        row: 4,
-        column: 0,
-      }),
-    ).toThrow(/out of range/);
-    expect(() => wellPlate.getIndex(24)).toThrow(/out of range/);
-  });
-
-  it('get index with number-number format', () => {
-    const wellPlate = getWellPlate('4x6', PositionFormat.NumberNumber);
-    expect(wellPlate.getIndex('2.4')).toStrictEqual(9);
-  });
-
-  it('sequential and letterNumber formats', () => {
-    const wellPlateSeq = getWellPlate('9x9', PositionFormat.Sequential);
-    expect(wellPlateSeq.positionFormat).toStrictEqual(
-      PositionFormat.Sequential,
-    );
-    // Check this because format can come from a database
-    expect(wellPlateSeq.positionFormat).toStrictEqual('SEQUENTIAL');
-
-    const wellPlate = getWellPlate('9x9');
-    expect(wellPlate.positionFormat).toStrictEqual(PositionFormat.LetterNumber);
-    // Check this because format can come from a database
-    expect(wellPlate.positionFormat).toStrictEqual('LETTER_NUMBER');
-  });
-
-  it('getPosition Sequential format', () => {
-    const wellPlate = getWellPlate('6x8', PositionFormat.Sequential);
-    expect(wellPlate.getPosition('9')).toStrictEqual({
-      row: 1,
-      column: 0,
-    });
-
-    expect(wellPlate.getPosition('45')).toStrictEqual({
-      row: 5,
-      column: 4,
-    });
-
-    expect(() => wellPlate.getPosition('82')).toThrow(/out of range/);
-    expect(() => wellPlate.getPosition('A1')).toThrow(
-      /invalid well code format. Must be a number/,
-    );
-    expect(() => wellPlate.getPosition('inv')).toThrow(
-      /invalid well code format. Must be a number/,
-    );
-  });
-
-  it('getPosition NumberNumber format', () => {
-    const wellPlate = getWellPlate('9x9', PositionFormat.NumberNumber);
-    expect(wellPlate.getPosition('1.9')).toStrictEqual({
-      row: 0,
-      column: 8,
-    });
-
-    expect(wellPlate.getPosition('7.5')).toStrictEqual({
-      row: 6,
-      column: 4,
-    });
-
-    expect(() => wellPlate.getPosition('10.1')).toThrow(/out of range/);
-    expect(() => wellPlate.getPosition('1.0')).toThrow(/out of range/);
-    expect(() => wellPlate.getPosition('0.1')).toThrow(/out of range/);
-    expect(() => wellPlate.getPosition('A1')).toThrow(
-      'invalid well code format. Must be 2 numbers separated by a .',
-    );
-  });
-
-  it('should return column labels', () => {
-    const wellPlate = getWellPlate('8x12');
-    const expected = [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12',
-    ];
-    expect(wellPlate.columnLabels).toStrictEqual(expected);
-
-    const wellPlateSeq = getWellPlate('3x4', PositionFormat.Sequential);
-    expect(wellPlateSeq.columnLabels).toStrictEqual(['1', '2', '3', '4']);
-  });
-
-  it('should return row labels', () => {
-    const wellPlate = getWellPlate('8x12');
-    const expected = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    expect(wellPlate.rowLabels).toStrictEqual(expected);
-
-    const wellPlateSeq = getWellPlate('3x4', PositionFormat.Sequential);
-    expect(wellPlateSeq.rowLabels).toStrictEqual(['1', '2', '3']);
-  });
-
+describe('position data', () => {
   it('set and get data', () => {
     const wellPlate = getWellPlate('8x12');
     wellPlate.setData(4, 'data1');
@@ -312,7 +346,9 @@ describe('WellPlate', () => {
     expect(wellPlate.getData('B5')).toStrictEqual('data2');
     expect(wellPlate.getData({ row: 3, column: 5 })).toStrictEqual('data3');
   });
+});
 
+describe('iteration', () => {
   it('iterator', () => {
     const wellPlate = getWellPlate('2x3');
     expect([...wellPlate]).toStrictEqual([
