@@ -1,11 +1,11 @@
 import { getRange } from './utils';
 
-type PositionInput = string | number | IPosition;
+export type Position = string | number | RowColumnPosition;
 
 /**
  * The position on a 2 dimensional well plate.
  */
-export interface IPosition {
+export interface RowColumnPosition {
   /**
    * The row index on the well plate. Index starts at 0.
    */
@@ -159,7 +159,7 @@ export class WellPlate<T = any> {
   }
 
   private _getPositionCode(
-    arg1: PositionInput,
+    arg1: Position,
     iterationOrder: IterationOrder,
   ): string {
     if (typeof arg1 === 'number') {
@@ -211,7 +211,7 @@ export class WellPlate<T = any> {
    * @param arg1 - The index position of the well, starting with 0, or the position of the well, see [[Position]]
    * @returns The code of the well position. The format depends on the PositionFormat, see [[wellCodeFormat]]
    */
-  private _getFormattedPosition(arg1: PositionInput): string {
+  private _getFormattedPosition(arg1: Position): string {
     return this._getPositionCode(arg1, this.iterationOrder);
   }
 
@@ -223,35 +223,35 @@ export class WellPlate<T = any> {
    * @param mode The subset selection mode
    */
   public getPositionSubset(
-    bound1: PositionInput,
-    bound2: PositionInput,
+    bound1: Position,
+    bound2: Position,
     mode: SubsetMode,
     encoding: 'index',
   ): number[];
   public getPositionSubset(
-    bound1: PositionInput,
-    bound2: PositionInput,
+    bound1: Position,
+    bound2: Position,
     mode: SubsetMode,
     encoding: 'row_column',
-  ): IPosition[];
+  ): RowColumnPosition[];
   public getPositionSubset(
-    bound1: PositionInput,
-    bound2: PositionInput,
+    bound1: Position,
+    bound2: Position,
     mode: SubsetMode,
     encoding: 'formatted',
   ): string[];
   public getPositionSubset(
-    bound1: PositionInput,
-    bound2: PositionInput,
+    bound1: Position,
+    bound2: Position,
     mode: SubsetMode,
     encoding: PositionEncoding,
-  ): PositionInput[];
+  ): Position[];
   public getPositionSubset(
-    bound1: PositionInput,
-    bound2: PositionInput,
+    bound1: Position,
+    bound2: Position,
     mode: SubsetMode,
     encoding: PositionEncoding,
-  ): PositionInput[] {
+  ): Position[] {
     if (mode === SubsetMode.zone) {
       return this._getPositionCodeZone(bound1, bound2).map((position) =>
         this.getPosition(position, encoding),
@@ -289,9 +289,9 @@ export class WellPlate<T = any> {
    * @param bound2 The other of the 2 bounding position to include in the zone
    */
   private _getPositionCodeZone(
-    bound1: PositionInput,
-    bound2: PositionInput,
-  ): IPosition[] {
+    bound1: Position,
+    bound2: Position,
+  ): RowColumnPosition[] {
     const startPosition = this._getPosition(bound1);
     const endPosition = this._getPosition(bound2);
     this._checkPosition(startPosition);
@@ -320,7 +320,7 @@ export class WellPlate<T = any> {
   }
 
   private _getOrderedIndex(
-    position: PositionInput,
+    position: Position,
     iterationOrder: IterationOrder,
   ): number {
     if (typeof position === 'number') {
@@ -340,31 +340,28 @@ export class WellPlate<T = any> {
     return index;
   }
 
-  private _getIndex(position: PositionInput): number {
+  private _getIndex(position: Position): number {
     return this._getOrderedIndex(position, this.iterationOrder);
   }
 
-  public getData(position: PositionInput) {
+  public getData(position: Position) {
     const index = this._getIndex(position);
     return this.data[index];
   }
 
-  public setData(position: PositionInput, item: T) {
+  public setData(position: Position, item: T) {
     const index = this._getIndex(position);
     this.data[index] = item;
   }
 
-  public getPosition(input: PositionInput, encoding: 'row_column'): IPosition;
-  public getPosition(input: PositionInput, encoding: 'index'): number;
-  public getPosition(input: PositionInput, encoding: 'formatted'): string;
   public getPosition(
-    input: PositionInput,
-    encoding: PositionEncoding,
-  ): PositionInput;
-  public getPosition(
-    input: PositionInput,
-    encoding: PositionEncoding,
-  ): PositionInput {
+    input: Position,
+    encoding: 'row_column',
+  ): RowColumnPosition;
+  public getPosition(input: Position, encoding: 'index'): number;
+  public getPosition(input: Position, encoding: 'formatted'): string;
+  public getPosition(input: Position, encoding: PositionEncoding): Position;
+  public getPosition(input: Position, encoding: PositionEncoding): Position {
     switch (encoding) {
       case 'index': {
         return this._getIndex(input);
@@ -385,7 +382,7 @@ export class WellPlate<T = any> {
    * Get the well position given a formatted well position code.
    * @param wellCode The position code.
    */
-  private _getPosition(wellCode: PositionInput): IPosition {
+  private _getPosition(wellCode: Position): RowColumnPosition {
     if (typeof wellCode === 'number') {
       this._checkIndex(wellCode);
       return this._getPositionFromIndex(wellCode, this.iterationOrder);
@@ -433,20 +430,6 @@ export class WellPlate<T = any> {
     }
   }
 
-  /**
-   * This library works with indices that increment by jumping from one column to the next
-   * If you own index works by jumping from one row to the next, you can use this method to transform your index.
-   * This is especially useful to iterate on portions of the plates by row instead of by column
-   * @param index The index by row
-   * @returns The index by column, such as used by the library
-   */
-  public getTransposedIndex(index: number) {
-    const position = this._getPositionFromIndex(index, this.iterationOrder);
-    // Invert row and column
-    const { row: column, column: row } = position;
-    return this._getIndex({ row, column });
-  }
-
   public get columnLabels(): string[] {
     const result = [];
     let label = 1;
@@ -477,7 +460,7 @@ export class WellPlate<T = any> {
   private _getPositionFromIndex(
     index: number,
     iterationOrder: IterationOrder,
-  ): IPosition {
+  ): RowColumnPosition {
     if (iterationOrder === IterationOrder.ByColumn) {
       return {
         row: Math.floor(index / this.columns),
@@ -525,7 +508,7 @@ export class WellPlate<T = any> {
     }
   }
 
-  private _checkPosition(position: IPosition) {
+  private _checkPosition(position: RowColumnPosition) {
     if (
       position.row < 0 ||
       position.row >= this.rows ||
@@ -536,17 +519,17 @@ export class WellPlate<T = any> {
     }
   }
 
-  private _sequentialCodeFromPosition(position: IPosition): string {
+  private _sequentialCodeFromPosition(position: RowColumnPosition): string {
     return String(position.row * this.columns + position.column + 1);
   }
 
-  private _letterNumberCodeFromPosition(position: IPosition): string {
+  private _letterNumberCodeFromPosition(position: RowColumnPosition): string {
     const startCharCode = 'A'.charCodeAt(0);
     const letter = String.fromCharCode(startCharCode + position.row);
     return letter + (position.column + 1);
   }
 
-  private _numberNumberCodeFromPosition(position: IPosition): string {
+  private _numberNumberCodeFromPosition(position: RowColumnPosition): string {
     return `${position.row + 1}${this.separator}${position.column + 1}`;
   }
 }

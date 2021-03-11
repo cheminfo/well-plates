@@ -388,7 +388,7 @@ describe('get position ranges and subsets', () => {
   });
 });
 
-describe('position data', () => {
+describe('misc methods', () => {
   it('set and get data', () => {
     const wellPlate = getWellPlate('8x12');
     wellPlate.setData(4, 'data1');
