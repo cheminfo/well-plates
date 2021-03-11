@@ -159,42 +159,48 @@ export class WellPlate<T = any> {
   }
 
   private _getPositionCode(
-    arg1: Position,
+    inputPosition: Position,
     iterationOrder: IterationOrder,
   ): string {
-    if (typeof arg1 === 'number') {
-      this._checkIndex(arg1);
+    if (typeof inputPosition === 'number') {
+      this._checkIndex(inputPosition);
       switch (this.positionFormat) {
         case PositionFormat.Sequential: {
-          return String(arg1 + 1);
+          return String(inputPosition + 1);
         }
         case PositionFormat.LetterNumber: {
-          const position = this._getPositionFromIndex(arg1, iterationOrder);
+          const position = this._getPositionFromIndex(
+            inputPosition,
+            iterationOrder,
+          );
           return this._letterNumberCodeFromPosition(position);
         }
         case PositionFormat.NumberNumber: {
-          const position = this._getPositionFromIndex(arg1, iterationOrder);
+          const position = this._getPositionFromIndex(
+            inputPosition,
+            iterationOrder,
+          );
           return this._numberNumberCodeFromPosition(position);
         }
         default: {
           throw new Error('Unreachable');
         }
       }
-    } else if (typeof arg1 === 'string') {
+    } else if (typeof inputPosition === 'string') {
       // This will check if the input is valid
-      this._getPosition(arg1);
-      return arg1;
+      this._getPosition(inputPosition);
+      return inputPosition;
     } else {
-      this._checkPosition(arg1);
+      this._checkPosition(inputPosition);
       switch (this.positionFormat) {
         case PositionFormat.Sequential: {
-          return this._sequentialCodeFromPosition(arg1);
+          return this._sequentialCodeFromPosition(inputPosition);
         }
         case PositionFormat.LetterNumber: {
-          return this._letterNumberCodeFromPosition(arg1);
+          return this._letterNumberCodeFromPosition(inputPosition);
         }
         case PositionFormat.NumberNumber: {
-          return this._numberNumberCodeFromPosition(arg1);
+          return this._numberNumberCodeFromPosition(inputPosition);
         }
         default: {
           throw new Error('Unreachable');
@@ -208,11 +214,11 @@ export class WellPlate<T = any> {
    *
    * Some wells will return a code compose of a letter and a number
    * Other will will simply return the position
-   * @param arg1 - The index position of the well, starting with 0, or the position of the well, see [[Position]]
+   * @param inputPosition - The index position in any valid encoding [[Position]]
    * @returns The code of the well position. The format depends on the PositionFormat, see [[wellCodeFormat]]
    */
-  private _getFormattedPosition(arg1: Position): string {
-    return this._getPositionCode(arg1, this.iterationOrder);
+  private _getFormattedPosition(inputPosition: Position): string {
+    return this._getPositionCode(inputPosition, this.iterationOrder);
   }
 
   /**
@@ -380,17 +386,17 @@ export class WellPlate<T = any> {
 
   /**
    * Get the well position given a formatted well position code.
-   * @param wellCode The position code.
+   * @param inputPosition The position code.
    */
-  private _getPosition(wellCode: Position): RowColumnPosition {
-    if (typeof wellCode === 'number') {
-      this._checkIndex(wellCode);
-      return this._getPositionFromIndex(wellCode, this.iterationOrder);
-    } else if (typeof wellCode === 'string') {
+  private _getPosition(inputPosition: Position): RowColumnPosition {
+    if (typeof inputPosition === 'number') {
+      this._checkIndex(inputPosition);
+      return this._getPositionFromIndex(inputPosition, this.iterationOrder);
+    } else if (typeof inputPosition === 'string') {
       if (this.positionFormat === PositionFormat.NumberNumber) {
         const reg = /^(?<row>\d+).(?<column>\d+)$/;
-        const m = reg.exec(wellCode);
-        const hasSeparator = wellCode.includes(this.separator);
+        const m = reg.exec(inputPosition);
+        const hasSeparator = inputPosition.includes(this.separator);
         if (!hasSeparator || m === null || !m.groups) {
           throw this._formatError();
         }
@@ -402,12 +408,12 @@ export class WellPlate<T = any> {
         return position;
       } else {
         const reg = /^(?<row>[A-Z])(?<column>\d+)$/;
-        const m = reg.exec(wellCode);
+        const m = reg.exec(inputPosition);
         if (m === null || !m.groups) {
           if (this.positionFormat !== PositionFormat.Sequential) {
             throw this._formatError();
           }
-          const wellIndex = +wellCode - 1;
+          const wellIndex = +inputPosition - 1;
           if (Number.isNaN(wellIndex)) {
             throw this._formatError();
           }
@@ -426,7 +432,7 @@ export class WellPlate<T = any> {
         return position;
       }
     } else {
-      return wellCode;
+      return inputPosition;
     }
   }
 
@@ -475,10 +481,13 @@ export class WellPlate<T = any> {
   }
 
   private _getIndexFromCode(
-    wellCode: string,
+    formattedPosition: string,
     iterationOrder: IterationOrder,
   ): number {
-    return this._getOrderedIndex(this._getPosition(wellCode), iterationOrder);
+    return this._getOrderedIndex(
+      this._getPosition(formattedPosition),
+      iterationOrder,
+    );
   }
 
   private _formatError() {
