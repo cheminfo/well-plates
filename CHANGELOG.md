@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.0.0](https://www.github.com/cheminfo/well-plates/compare/v4.1.1...v5.0.0) (2021-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove getTransposedIndex and rename IPosition to RowColumnPosition
+* getPositionCodeRange and getPositionCodeZone no longer exist and are replaced by getPositionSubset
+* getIndex and getPositionCode no longer exist and getPosition takes an additional parameter to choose the output encoding
+* getIndex now returns a result that depends on the iterationOrder property, and position passed by index in methods are also interpreted based on the iteration order
+
+### Features
+
+* apply iterationOrder to how indices are calculated ([ebf1e39](https://www.github.com/cheminfo/well-plates/commit/ebf1e39796746ca41502b67bb402f55fcad4ebbe)), closes [#8](https://www.github.com/cheminfo/well-plates/issues/8)
+* make size a public readonly property ([609db4b](https://www.github.com/cheminfo/well-plates/commit/609db4b230d25d93b2c6ed314dbaea74e15728fa))
+* remove getTransposedIndex ([d11432d](https://www.github.com/cheminfo/well-plates/commit/d11432d42b71bb5170c6a075fdd2f07393ef7c3d)), closes [#10](https://www.github.com/cheminfo/well-plates/issues/10)
+* unify getPosition, getIndex and getPositionCode into one method ([cd241ac](https://www.github.com/cheminfo/well-plates/commit/cd241acf327d51f22b289959ae9f0d16c9968572))
+* unify getPositionCodeRange and getPositionCodeZone into one new method getPositionSubset ([d6831fe](https://www.github.com/cheminfo/well-plates/commit/d6831fe57a4a60e3a3b9c75834053a9ebcee4623))
+
 ### [4.1.1](https://github.com/cheminfo/well-plates/compare/v4.1.0...v4.1.1) (2021-01-25)
 
 
@@ -82,6 +100,3 @@ config object.
 
 <a name="1.0.0"></a>
 # 1.0.0 (2018-08-26)
-
-
-
