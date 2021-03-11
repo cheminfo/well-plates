@@ -53,17 +53,21 @@ export enum IterationOrder {
 
 export type PositionEncoding = 'index' | 'row_column' | 'formatted';
 
-export enum RangeMode {
+export enum SubsetMode {
   /**
-   * Process ranges row by row
+   * Subset is a range row by row
    */
 
   byRows = 'BY_ROWS',
 
   /**
-   * Process range column by column
+   * Subset is a range column by column
    */
   byColumns = 'BY_COLUMNS',
+  /**
+   * Subset is a square zone inside the plate
+   */
+  zone = 'ZONE',
 }
 
 export interface IWellPlateConfig {
@@ -212,26 +216,55 @@ export class WellPlate<T = any> {
   }
 
   /**
-   * Get a range of well position codes. Inverting the start and end positions
+   * Get a subset of well position codes based it's bounds and a subset method
+   * The bounds can be inverted.
    * @param bound1 One of the 2 bounding position to include in the range
    * @param bound2 The other of the 2 bounding position to include in the range
-   * @param mode If the range sholud be along rows or columns
+   * @param mode The subset selection mode
    */
-  public getPositionCodeRange(
+  public getPositionSubset(
     bound1: PositionInput,
     bound2: PositionInput,
-    mode: RangeMode = RangeMode.byRows,
-  ): string[] {
+    mode: SubsetMode,
+    encoding: 'index',
+  ): number[];
+  public getPositionSubset(
+    bound1: PositionInput,
+    bound2: PositionInput,
+    mode: SubsetMode,
+    encoding: 'row_column',
+  ): IPosition[];
+  public getPositionSubset(
+    bound1: PositionInput,
+    bound2: PositionInput,
+    mode: SubsetMode,
+    encoding: 'formatted',
+  ): string[];
+  public getPositionSubset(
+    bound1: PositionInput,
+    bound2: PositionInput,
+    mode: SubsetMode,
+    encoding: PositionEncoding,
+  ): PositionInput[];
+  public getPositionSubset(
+    bound1: PositionInput,
+    bound2: PositionInput,
+    mode: SubsetMode,
+    encoding: PositionEncoding,
+  ): PositionInput[] {
+    if (mode === SubsetMode.zone) {
+      return this._getPositionCodeZone(bound1, bound2).map((position) =>
+        this.getPosition(position, encoding),
+      );
+    }
     this._checkIndex(this._getIndex(bound1));
     this._checkIndex(this._getIndex(bound2));
     const iterationOrder =
-      mode === RangeMode.byRows
-        ? IterationOrder.ByColumn
-        : IterationOrder.ByRow;
-    const b1 =
-      typeof bound1 === 'number' ? this._getFormattedPosition(bound1) : bound1;
-    const b2 =
-      typeof bound2 === 'number' ? this._getFormattedPosition(bound2) : bound2;
+      mode === SubsetMode.byRows
+        ? IterationOrder.ByRow
+        : IterationOrder.ByColumn;
+    const b1 = typeof bound1 === 'number' ? this._getPosition(bound1) : bound1;
+    const b2 = typeof bound2 === 'number' ? this._getPosition(bound2) : bound2;
 
     let startIndex = this._getOrderedIndex(b1, iterationOrder);
     let endIndex = this._getOrderedIndex(b2, iterationOrder);
@@ -240,9 +273,14 @@ export class WellPlate<T = any> {
     }
     const size = endIndex - startIndex + 1;
     this._checkIndex(endIndex);
-    return getRange(startIndex, size).map((index) =>
-      this._getPositionCode(index, iterationOrder),
-    );
+    return getRange(startIndex, size)
+      .map((index) => {
+        if (iterationOrder !== this.iterationOrder) {
+          return this._getPositionFromIndex(index, iterationOrder);
+        }
+        return index;
+      })
+      .map((pos) => this.getPosition(pos, encoding));
   }
 
   /**
@@ -250,7 +288,10 @@ export class WellPlate<T = any> {
    * @param bound1 One of the 2 bounding position to include in the zone
    * @param bound2 The other of the 2 bounding position to include in the zone
    */
-  public getPositionCodeZone(bound1: PositionInput, bound2: PositionInput) {
+  private _getPositionCodeZone(
+    bound1: PositionInput,
+    bound2: PositionInput,
+  ): IPosition[] {
     const startPosition = this._getPosition(bound1);
     const endPosition = this._getPosition(bound2);
     this._checkPosition(startPosition);
@@ -269,12 +310,10 @@ export class WellPlate<T = any> {
     const range = [];
     for (let j = 0; j < height; j++) {
       for (let i = 0; i < width; i++) {
-        range.push(
-          this._getFormattedPosition({
-            row: upperLeft.row + j,
-            column: upperLeft.column + i,
-          }),
-        );
+        range.push({
+          row: upperLeft.row + j,
+          column: upperLeft.column + i,
+        });
       }
     }
     return range;
@@ -318,6 +357,10 @@ export class WellPlate<T = any> {
   public getPosition(input: PositionInput, encoding: 'row_column'): IPosition;
   public getPosition(input: PositionInput, encoding: 'index'): number;
   public getPosition(input: PositionInput, encoding: 'formatted'): string;
+  public getPosition(
+    input: PositionInput,
+    encoding: PositionEncoding,
+  ): PositionInput;
   public getPosition(
     input: PositionInput,
     encoding: PositionEncoding,

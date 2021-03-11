@@ -1,4 +1,4 @@
-import { IterationOrder, PositionFormat, RangeMode, WellPlate } from '..';
+import { IterationOrder, PositionFormat, SubsetMode, WellPlate } from '..';
 
 describe('Computed / read-only properties', () => {
   it('read-only size property', () => {
@@ -243,65 +243,112 @@ describe('getPosition with all different output encoding and format', () => {
 });
 
 describe('get position ranges and subsets', () => {
-  it('getCodeRange by rows', () => {
+  it('getCodeRange by columns', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
-    expect(wellPlate.getPositionCodeRange(16, 20)).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange(20, 16)).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange('C5', 'D3')).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange('D3', 'C5')).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange('C5', 20)).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionCodeRange(
+      wellPlate.getPositionSubset(16, 20, SubsetMode.byColumns, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(20, 16, SubsetMode.byColumns, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(
+        'C5',
+        'D3',
+        SubsetMode.byColumns,
+        'formatted',
+      ),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(
+        'D3',
+        'C5',
+        SubsetMode.byColumns,
+        'formatted',
+      ),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset('C5', 20, SubsetMode.byColumns, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(
         { row: 3, column: 2 },
         { row: 2, column: 4 },
+        SubsetMode.byColumns,
+        'formatted',
       ),
     ).toStrictEqual(expected);
   });
 
-  it('getCodeRange by rows, iteration order by rows', () => {
+  it('getCodeRange by rows, iteration order by columns', () => {
     const wellPlate = getWellPlate(
       '4x6',
       PositionFormat.LetterNumber,
       IterationOrder.ByRow,
     );
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
-    expect(wellPlate.getPositionCodeRange(11, 18)).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange(18, 11)).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange('C5', 'D3')).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange('D3', 'C5')).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeRange('C5', 11)).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionCodeRange(
+      wellPlate.getPositionSubset(
+        'C5',
+        'D3',
+        SubsetMode.byColumns,
+        'formatted',
+      ),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(11, 18, SubsetMode.byColumns, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(18, 11, SubsetMode.byColumns, 'formatted'),
+    ).toStrictEqual(expected);
+
+    expect(
+      wellPlate.getPositionSubset(
+        'D3',
+        'C5',
+        SubsetMode.byColumns,
+        'formatted',
+      ),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset('C5', 11, SubsetMode.byColumns, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(
         { row: 3, column: 2 },
         { row: 2, column: 4 },
+        SubsetMode.byColumns,
+        'formatted',
       ),
     ).toStrictEqual(expected);
   });
 
-  it('getCodeRange by columns', () => {
+  it('getCodeRange by rows', () => {
     const wellPlate = getWellPlate('5x6');
     const expected = ['C5', 'D5', 'E5', 'A6', 'B6', 'C6', 'D6', 'E6'];
     expect(
-      wellPlate.getPositionCodeRange(16, 29, RangeMode.byColumns),
+      wellPlate.getPositionSubset('C5', 'E6', SubsetMode.byRows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionCodeRange(29, 16, RangeMode.byColumns),
+      wellPlate.getPositionSubset('E6', 'C5', SubsetMode.byRows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionCodeRange('C5', 'E6', RangeMode.byColumns),
+      wellPlate.getPositionSubset(16, 29, SubsetMode.byRows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionCodeRange('E6', 'C5', RangeMode.byColumns),
+      wellPlate.getPositionSubset(29, 16, SubsetMode.byRows, 'formatted'),
     ).toStrictEqual(expected);
+
     expect(
-      wellPlate.getPositionCodeRange('A3', 'E2', RangeMode.byColumns),
+      wellPlate.getPositionSubset('A3', 'E2', SubsetMode.byRows, 'formatted'),
     ).toStrictEqual(['E2', 'A3']);
     expect(
-      wellPlate.getPositionCodeRange(
+      wellPlate.getPositionSubset(
         { row: 2, column: 4 },
         { row: 4, column: 5 },
-        RangeMode.byColumns,
+        SubsetMode.byRows,
+        'formatted',
       ),
     ).toStrictEqual(expected);
   });
@@ -309,29 +356,35 @@ describe('get position ranges and subsets', () => {
   it('getPositionCodeZone', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C2', 'C3', 'C4', 'D2', 'D3', 'D4'];
-    expect(wellPlate.getPositionCodeZone('C2', 'D4')).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeZone('D4', 'C2')).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeZone('D4', 'D4')).toStrictEqual(['D4']);
-    expect(wellPlate.getPositionCodeZone('B3', 'C2')).toStrictEqual([
-      'B2',
-      'B3',
-      'C2',
-      'C3',
-    ]);
+    expect(
+      wellPlate.getPositionSubset('C2', 'D4', SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset('D4', 'C2', SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset('D4', 'D4', SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(['D4']);
+    expect(
+      wellPlate.getPositionSubset('B3', 'C2', SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(['B2', 'B3', 'C2', 'C3']);
   });
 
   it('getPositionCodeZone with indices', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C2', 'C3', 'C4', 'D2', 'D3', 'D4'];
-    expect(wellPlate.getPositionCodeZone(13, 21)).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeZone(21, 13)).toStrictEqual(expected);
-    expect(wellPlate.getPositionCodeZone(21, 21)).toStrictEqual(['D4']);
-    expect(wellPlate.getPositionCodeZone(8, 13)).toStrictEqual([
-      'B2',
-      'B3',
-      'C2',
-      'C3',
-    ]);
+    expect(
+      wellPlate.getPositionSubset(13, 21, SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(21, 13, SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(expected);
+    expect(
+      wellPlate.getPositionSubset(21, 21, SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(['D4']);
+    expect(
+      wellPlate.getPositionSubset(8, 13, SubsetMode.zone, 'formatted'),
+    ).toStrictEqual(['B2', 'B3', 'C2', 'C3']);
   });
 });
 
