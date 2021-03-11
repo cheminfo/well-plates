@@ -121,6 +121,19 @@ describe('getPosition with all different output encoding and format', () => {
       column: 2,
     });
 
+    expect(
+      wellPlate.getPosition(
+        {
+          row: 1,
+          column: 2,
+        },
+        'row_column',
+      ),
+    ).toStrictEqual({
+      row: 1,
+      column: 2,
+    });
+
     expect(() => wellPlate.getPosition('E1', 'row_column')).toThrow(
       /out of range/,
     );
