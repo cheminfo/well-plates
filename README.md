@@ -11,7 +11,7 @@ Utility library to manipulate positions on well plates.
 
 `$ npm install --save well-plates`
 
-## [API Documentation](https://cheminfo.github.io/well-plates/modules/_index_.html)
+## [API Documentation](https://cheminfo.github.io/well-plates)
 
 ## License
 
