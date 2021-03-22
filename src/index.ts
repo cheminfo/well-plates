@@ -58,12 +58,12 @@ export enum SubsetMode {
    * Subset is a range row by row
    */
 
-  byRows = 'BY_ROWS',
+  columns = 'BY_ROWS',
 
   /**
    * Subset is a range column by column
    */
-  byColumns = 'BY_COLUMNS',
+  rows = 'BY_COLUMNS',
   /**
    * Subset is a square zone inside the plate
    */
@@ -266,7 +266,7 @@ export class WellPlate<T = any> {
     this._checkIndex(this._getIndex(bound1));
     this._checkIndex(this._getIndex(bound2));
     const iterationOrder =
-      mode === SubsetMode.byRows
+      mode === SubsetMode.columns
         ? IterationOrder.ByRow
         : IterationOrder.ByColumn;
     const b1 = typeof bound1 === 'number' ? this._getPosition(bound1) : bound1;
