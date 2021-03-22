@@ -87,7 +87,7 @@ export interface IWellPlateConfig {
 /**
  * WellPlate - class representing a well plate
  */
-export class WellPlate<T = any> {
+export class WellPlate<T = unknown> {
   /**
    * The number of rows the well plate has.
    */
@@ -116,7 +116,7 @@ export class WellPlate<T = any> {
   /**
    * Data associated to a given well
    */
-  public readonly data: T[];
+  public readonly data: Array<T | undefined>;
 
   /**
    * The number of wells on the well plate.
@@ -355,7 +355,7 @@ export class WellPlate<T = any> {
     return this.data[index];
   }
 
-  public setData(position: Position, item: T) {
+  public setData(position: Position, item: T | undefined) {
     const index = this._getIndex(position);
     this.data[index] = item;
   }
