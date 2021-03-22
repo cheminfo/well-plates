@@ -260,35 +260,25 @@ describe('get position ranges and subsets', () => {
     const wellPlate = getWellPlate('4x6');
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
     expect(
-      wellPlate.getPositionSubset(16, 20, SubsetMode.byColumns, 'formatted'),
+      wellPlate.getPositionSubset(16, 20, SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(20, 16, SubsetMode.byColumns, 'formatted'),
+      wellPlate.getPositionSubset(20, 16, SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(
-        'C5',
-        'D3',
-        SubsetMode.byColumns,
-        'formatted',
-      ),
+      wellPlate.getPositionSubset('C5', 'D3', SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(
-        'D3',
-        'C5',
-        SubsetMode.byColumns,
-        'formatted',
-      ),
+      wellPlate.getPositionSubset('D3', 'C5', SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset('C5', 20, SubsetMode.byColumns, 'formatted'),
+      wellPlate.getPositionSubset('C5', 20, SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
       wellPlate.getPositionSubset(
         { row: 3, column: 2 },
         { row: 2, column: 4 },
-        SubsetMode.byColumns,
+        SubsetMode.rows,
         'formatted',
       ),
     ).toStrictEqual(expected);
@@ -302,36 +292,26 @@ describe('get position ranges and subsets', () => {
     );
     const expected = ['C5', 'C6', 'D1', 'D2', 'D3'];
     expect(
-      wellPlate.getPositionSubset(
-        'C5',
-        'D3',
-        SubsetMode.byColumns,
-        'formatted',
-      ),
+      wellPlate.getPositionSubset('C5', 'D3', SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(11, 18, SubsetMode.byColumns, 'formatted'),
+      wellPlate.getPositionSubset(11, 18, SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(18, 11, SubsetMode.byColumns, 'formatted'),
+      wellPlate.getPositionSubset(18, 11, SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
 
     expect(
-      wellPlate.getPositionSubset(
-        'D3',
-        'C5',
-        SubsetMode.byColumns,
-        'formatted',
-      ),
+      wellPlate.getPositionSubset('D3', 'C5', SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset('C5', 11, SubsetMode.byColumns, 'formatted'),
+      wellPlate.getPositionSubset('C5', 11, SubsetMode.rows, 'formatted'),
     ).toStrictEqual(expected);
     expect(
       wellPlate.getPositionSubset(
         { row: 3, column: 2 },
         { row: 2, column: 4 },
-        SubsetMode.byColumns,
+        SubsetMode.rows,
         'formatted',
       ),
     ).toStrictEqual(expected);
@@ -341,26 +321,26 @@ describe('get position ranges and subsets', () => {
     const wellPlate = getWellPlate('5x6');
     const expected = ['C5', 'D5', 'E5', 'A6', 'B6', 'C6', 'D6', 'E6'];
     expect(
-      wellPlate.getPositionSubset('C5', 'E6', SubsetMode.byRows, 'formatted'),
+      wellPlate.getPositionSubset('C5', 'E6', SubsetMode.columns, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset('E6', 'C5', SubsetMode.byRows, 'formatted'),
+      wellPlate.getPositionSubset('E6', 'C5', SubsetMode.columns, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(16, 29, SubsetMode.byRows, 'formatted'),
+      wellPlate.getPositionSubset(16, 29, SubsetMode.columns, 'formatted'),
     ).toStrictEqual(expected);
     expect(
-      wellPlate.getPositionSubset(29, 16, SubsetMode.byRows, 'formatted'),
+      wellPlate.getPositionSubset(29, 16, SubsetMode.columns, 'formatted'),
     ).toStrictEqual(expected);
 
     expect(
-      wellPlate.getPositionSubset('A3', 'E2', SubsetMode.byRows, 'formatted'),
+      wellPlate.getPositionSubset('A3', 'E2', SubsetMode.columns, 'formatted'),
     ).toStrictEqual(['E2', 'A3']);
     expect(
       wellPlate.getPositionSubset(
         { row: 2, column: 4 },
         { row: 4, column: 5 },
-        SubsetMode.byRows,
+        SubsetMode.columns,
         'formatted',
       ),
     ).toStrictEqual(expected);
