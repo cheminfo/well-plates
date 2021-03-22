@@ -387,10 +387,14 @@ describe('misc methods', () => {
     wellPlate.setData(4, 'data1');
     wellPlate.setData('B5', 'data2');
     wellPlate.setData({ row: 3, column: 5 }, 'data3');
+
     expect(wellPlate.getData(10)).toBeUndefined();
     expect(wellPlate.getData(4)).toStrictEqual('data1');
     expect(wellPlate.getData('B5')).toStrictEqual('data2');
     expect(wellPlate.getData({ row: 3, column: 5 })).toStrictEqual('data3');
+
+    wellPlate.setData(4, undefined);
+    expect(wellPlate.getData(4)).toBeUndefined();
   });
 });
 
@@ -493,7 +497,7 @@ function getWellPlate(
   if (!result || !result.groups) {
     throw new Error('wrong type');
   }
-  return new WellPlate({
+  return new WellPlate<string>({
     rows: parseInt(result.groups.nRows, 10),
     columns: parseInt(result.groups.nCols, 10),
     positionFormat,
