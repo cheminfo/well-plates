@@ -183,6 +183,7 @@ export class WellPlate<T = unknown> {
           return this._numberNumberCodeFromPosition(position);
         }
         default: {
+          /* istanbul ignore next */
           throw new Error('Unreachable');
         }
       }
@@ -203,6 +204,7 @@ export class WellPlate<T = unknown> {
           return this._numberNumberCodeFromPosition(inputPosition);
         }
         default: {
+          /* istanbul ignore next */
           throw new Error('Unreachable');
         }
       }
@@ -379,6 +381,7 @@ export class WellPlate<T = unknown> {
         return this._getFormattedPosition(input);
       }
       default: {
+        /* istanbul ignore next */
         throw new Error('unreachable');
       }
     }
@@ -506,6 +509,7 @@ export class WellPlate<T = unknown> {
         );
       }
       default: {
+        /* istanbul ignore next */
         throw new Error('Unreachable');
       }
     }
