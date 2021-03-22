@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.0.0](https://www.github.com/cheminfo/well-plates/compare/v5.0.0...v6.0.0) (2021-03-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* SubsetMode option names have changed
+
+### Features
+
+* improve typing for setData and getData ([e83d80a](https://www.github.com/cheminfo/well-plates/commit/e83d80adb362cba261a10c6cd3309a51254a5edb))
+* rename SubsetMode options ([0424241](https://www.github.com/cheminfo/well-plates/commit/042424110162b9f001c6e08d47983e8bca606276))
+
 ## [5.0.0](https://www.github.com/cheminfo/well-plates/compare/v4.1.1...v5.0.0) (2021-03-11)
 
 
