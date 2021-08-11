@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PositionFormat | well-plates</title>
+	<title>IterationOrder | well-plates</title>
 	<meta name="description" content="Documentation for well-plates">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">well-plates</a>
 				</li>
 				<li>
-					<a href="positionformat.html">PositionFormat</a>
+					<a href="IterationOrder.html">IterationOrder</a>
 				</li>
 			</ul>
-			<h1>Enumeration PositionFormat</h1>
+			<h1>Enumeration IterationOrder</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The format of a well position.</p>
+						<p>The iteration order
+						Determines in which order iteration over wells is performed</p>
 					</div>
 				</div>
 			</section>
@@ -79,9 +80,8 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="positionformat.html#letternumber" class="tsd-kind-icon">Letter<wbr>Number</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="positionformat.html#numbernumber" class="tsd-kind-icon">Number<wbr>Number</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="positionformat.html#sequential" class="tsd-kind-icon">Sequential</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="IterationOrder.html#ByColumn" class="tsd-kind-icon">By<wbr>Column</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="IterationOrder.html#ByRow" class="tsd-kind-icon">By<wbr>Row</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,49 +90,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="letternumber" class="tsd-anchor"></a>
-					<h3>Letter<wbr>Number</h3>
-					<div class="tsd-signature tsd-kind-icon">Letter<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;LETTER_NUMBER&quot;</span></div>
+					<a name="ByColumn" class="tsd-anchor"></a>
+					<h3>By<wbr>Column</h3>
+					<div class="tsd-signature tsd-kind-icon">By<wbr>Column<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;BY_COLUMN&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/763b99f/src/index.ts#L31">index.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/6fbab8b/src/index.ts#L47">index.ts:47</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>A letter + a number. When this format is used, the position will be represented
-							as a string with one letter + one number, representing the row and column position. For example B3 is for second row, 3rd column.</p>
+							<p>Jump from one column to the next when iterating</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="numbernumber" class="tsd-anchor"></a>
-					<h3>Number<wbr>Number</h3>
-					<div class="tsd-signature tsd-kind-icon">Number<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;NUMBER_NUMBER&quot;</span></div>
+					<a name="ByRow" class="tsd-anchor"></a>
+					<h3>By<wbr>Row</h3>
+					<div class="tsd-signature tsd-kind-icon">By<wbr>Row<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;BY_ROW&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/763b99f/src/index.ts#L36">index.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/6fbab8b/src/index.ts#L51">index.ts:51</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>A number + a number. When this format is used, the position will be represented
-							as number for the row and a number for the column. For example 2-4 is for secord row, 4th column.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="sequential" class="tsd-anchor"></a>
-					<h3>Sequential</h3>
-					<div class="tsd-signature tsd-kind-icon">Sequential<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;SEQUENTIAL&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/cheminfo/well-plates/blob/763b99f/src/index.ts#L26">index.ts:26</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Sequential. When this format is used, the position code will starts with 1 and will be incremented columns first.</p>
+							<p>Jump from one row to the next when iterating</p>
 						</div>
 					</div>
 				</section>
@@ -148,44 +131,41 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum">
-						<a href="iterationorder.html" class="tsd-kind-icon">Iteration<wbr>Order</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum">
-						<a href="positionformat.html" class="tsd-kind-icon">Position<wbr>Format</a>
+						<a href="IterationOrder.html" class="tsd-kind-icon">Iteration<wbr>Order</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="positionformat.html#letternumber" class="tsd-kind-icon">Letter<wbr>Number</a>
+								<a href="IterationOrder.html#ByColumn" class="tsd-kind-icon">By<wbr>Column</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="positionformat.html#numbernumber" class="tsd-kind-icon">Number<wbr>Number</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="positionformat.html#sequential" class="tsd-kind-icon">Sequential</a>
+								<a href="IterationOrder.html#ByRow" class="tsd-kind-icon">By<wbr>Row</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-enum">
-						<a href="subsetmode.html" class="tsd-kind-icon">Subset<wbr>Mode</a>
+						<a href="PositionFormat.html" class="tsd-kind-icon">Position<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="SubsetMode.html" class="tsd-kind-icon">Subset<wbr>Mode</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="../classes/wellplate.html" class="tsd-kind-icon">Well<wbr>Plate</a>
+						<a href="../classes/WellPlate.html" class="tsd-kind-icon">Well<wbr>Plate</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/iwellplateconfig.html" class="tsd-kind-icon">IWell<wbr>Plate<wbr>Config</a>
+						<a href="../interfaces/IWellPlateConfig.html" class="tsd-kind-icon">IWell<wbr>Plate<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/rowcolumnposition.html" class="tsd-kind-icon">Row<wbr>Column<wbr>Position</a>
+						<a href="../interfaces/RowColumnPosition.html" class="tsd-kind-icon">Row<wbr>Column<wbr>Position</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#position" class="tsd-kind-icon">Position</a>
+						<a href="../modules.html#Position" class="tsd-kind-icon">Position</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#positionencoding" class="tsd-kind-icon">Position<wbr>Encoding</a>
+						<a href="../modules.html#PositionEncoding" class="tsd-kind-icon">Position<wbr>Encoding</a>
 					</li>
 				</ul>
 			</nav>
