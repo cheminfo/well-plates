@@ -1,5 +1,13 @@
 # Changelog
 
+### [6.0.1](https://www.github.com/cheminfo/well-plates/compare/v6.0.0...v6.0.1) (2021-08-11)
+
+
+### Bug Fixes
+
+* correct peer dependency issue ([e4157ae](https://www.github.com/cheminfo/well-plates/commit/e4157aeb26892607a30b19c75d31f6675731c6ce))
+* throw error if sequential well plate receives non-integer ([117e00a](https://www.github.com/cheminfo/well-plates/commit/117e00aea16e4da7a7c60000fd4b038cd903d395))
+
 ## [6.0.0](https://www.github.com/cheminfo/well-plates/compare/v5.0.0...v6.0.0) (2021-03-22)
 
 
