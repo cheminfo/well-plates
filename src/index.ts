@@ -416,7 +416,11 @@ export class WellPlate<T = unknown> {
           if (this.positionFormat !== PositionFormat.Sequential) {
             throw this._formatError();
           }
+
           const wellIndex = +inputPosition - 1;
+          if (!Number.isInteger(wellIndex)) {
+            throw this._formatError();
+          }
           if (Number.isNaN(wellIndex)) {
             throw this._formatError();
           }
@@ -501,7 +505,7 @@ export class WellPlate<T = unknown> {
         );
       }
       case PositionFormat.Sequential: {
-        return new Error('invalid well code format. Must be a number');
+        return new Error('invalid well code format. Must be an integer');
       }
       case PositionFormat.NumberNumber: {
         return new Error(

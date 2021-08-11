@@ -217,14 +217,19 @@ describe('getPosition with all different output encoding and format', () => {
       column: 4,
     });
 
+    expect(wellPlate.getPosition('1', 'index')).toStrictEqual(0);
+
     expect(() => wellPlate.getPosition('82', 'row_column')).toThrow(
       /out of range/,
     );
     expect(() => wellPlate.getPosition('A1', 'row_column')).toThrow(
-      /invalid well code format. Must be a number/,
+      /invalid well code format. Must be an integer/,
+    );
+    expect(() => wellPlate.getPosition('1.1', 'row_column')).toThrow(
+      /invalid well code format. Must be an integer/,
     );
     expect(() => wellPlate.getPosition('inv', 'row_column')).toThrow(
-      /invalid well code format. Must be a number/,
+      /invalid well code format. Must be an integer/,
     );
   });
 
