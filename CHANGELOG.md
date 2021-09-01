@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.2](https://www.github.com/cheminfo/well-plates/compare/v6.0.1...v6.0.2) (2021-09-01)
+
+
+### Bug Fixes
+
+* use ES2020 target ([79e124a](https://www.github.com/cheminfo/well-plates/commit/79e124a8dc016509d3b89b043630855243e3b71e))
+
 ### [6.0.1](https://www.github.com/cheminfo/well-plates/compare/v6.0.0...v6.0.1) (2021-08-11)
 
 
