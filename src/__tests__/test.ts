@@ -50,6 +50,8 @@ describe('getPosition with all different output encoding and format', () => {
     expect(() => wellPlate.getPosition('U2', 'formatted')).toThrow(
       /well position is out of range/,
     );
+    // Normalize output
+    expect(wellPlate.getPosition('A03', 'formatted')).toStrictEqual('A3');
     expect(
       wellPlate.getPosition({ row: 3, column: 3 }, 'formatted'),
     ).toStrictEqual('D4');

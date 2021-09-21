@@ -189,8 +189,8 @@ export class WellPlate<T = unknown> {
       }
     } else if (typeof inputPosition === 'string') {
       // This will check if the input is valid
-      this._getPosition(inputPosition);
-      return inputPosition;
+      const position = this._getPosition(inputPosition);
+      return this._getFormattedPosition(position);
     } else {
       this._checkPosition(inputPosition);
       switch (this.positionFormat) {
