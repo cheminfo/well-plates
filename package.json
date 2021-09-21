@@ -1,6 +1,6 @@
 {
   "name": "well-plates",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "Utility to manipulate positions on well plates",
   "main": "./lib/index.js",
   "module": "./lib-es6/index.js",
