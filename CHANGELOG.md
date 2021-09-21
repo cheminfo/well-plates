@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.3](https://www.github.com/cheminfo/well-plates/compare/v6.0.2...v6.0.3) (2021-09-21)
+
+
+### Bug Fixes
+
+* make sure formatted position becomes normalized when passed a string as input ([394ab4e](https://www.github.com/cheminfo/well-plates/commit/394ab4e19cf1cac4dbf8a874716b435f77e004d0))
+
 ### [6.0.2](https://www.github.com/cheminfo/well-plates/compare/v6.0.1...v6.0.2) (2021-09-01)
 
 
